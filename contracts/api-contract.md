@@ -20,6 +20,10 @@
 | `GET` | `/api/alerts` | List generated detection alerts (`?simulation_id=...`) |
 | `POST` | `/api/alerts/{id}/contain` | SOAR automated host containment & credential revocation |
 | `GET` | `/api/simulations/{id}` | Retrieve completed simulation by ID |
+| `GET` | `/api/incidents/{id}/forensic-report` | Full forensic incident report & executive analysis |
+| `GET` | `/api/incidents/{id}/forensic-report/markdown` | Formatted Markdown forensic report download |
+| `GET` | `/api/incidents/{id}/iocs` | High-fidelity Indicators of Compromise (IPs, files, credentials) |
+| `GET` | `/api/incidents/{id}/stix-bundle` | OASIS STIX 2.1 Threat Intelligence JSON bundle export |
 | `POST` | `/api/simulations/{id}/adaption-analysis` | Threat intelligence enrichment via Adaption Labs |
 | `GET` | `/api/adaption/status` | Adaption Labs SDK integration status & pipeline metrics |
 | `POST` | `/api/adaption/curate-dataset` | Curate telemetry into model-ready AI fine-tuning dataset |
