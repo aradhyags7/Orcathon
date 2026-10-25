@@ -8,6 +8,12 @@ export interface Asset {
   is_decoy: boolean;
   description: string;
   ip?: string;
+  canary_token?: string | null;
+  content_source?: "adaption" | "cached" | "template" | "hand-authored template";
+  content_preview?: string | null;
+  template_preview?: string | null;
+  run_id?: string | null;
+  evaluation?: string | null;
 }
 
 export interface NetworkEdge {

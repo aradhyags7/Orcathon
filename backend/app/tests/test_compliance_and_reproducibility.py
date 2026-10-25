@@ -160,7 +160,7 @@ def test_schema_contract_compliance():
         if a["is_decoy"]:
             assert "canary_token" in a
             assert "content_preview" in a
-            assert a["content_source"] in ("adaption", "cached", "template")
+            assert a["content_source"] in ("adaption", "cached", "template", "hand-authored template")
 
     # 6. Baseline comparison contract fields
     baseline_res = client.get("/api/baseline")

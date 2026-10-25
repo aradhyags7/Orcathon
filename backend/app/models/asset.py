@@ -13,8 +13,11 @@ class Asset(BaseModel):
     is_decoy: bool = Field(default=False, description="True if asset is a deception tripwire/decoy")
     description: str = Field(default="", description="Asset description or purpose")
     canary_token: Optional[str] = Field(default=None, description="Locally generated canary token embedded in decoy")
-    content_source: Literal["adaption", "cached", "template"] = Field(default="template", description="Source of decoy content")
+    content_source: Literal["adaption", "cached", "template", "hand-authored template"] = Field(default="template", description="Source of decoy content")
     content_preview: Optional[str] = Field(default=None, description="Preview of generated decoy content")
+    template_preview: Optional[str] = Field(default=None, description="Naive template baseline content")
+    run_id: Optional[str] = Field(default=None, description="Run ID from Adaption SDK if executed")
+    evaluation: Optional[str] = Field(default="not available", description="Evaluation score from get_evaluation or 'not available'")
 
 class AssetsResponse(BaseModel):
     assets: list[Asset]

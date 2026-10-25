@@ -89,6 +89,7 @@ export const DashboardPage: React.FC = () => {
             <CanaryTrapsPanel
               currentStep={currentStep}
               stepTimestamps={stepTimestamps}
+              assets={graph.nodes}
             />
           </div>
 

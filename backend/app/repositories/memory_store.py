@@ -86,18 +86,28 @@ class MemoryStore:
             "decoy-admin-credential": "AKIA_CANARY_ADMIN_9921",
             "honey-credential-01": "AKIA_CANARY_PAYMENT_PROD_1142",
         }
+        template_map = {
+            "decoy-payroll-file": "CONFIDENTIAL PAYROLL. User: admin, Pass: 123456. Salary: 100000.",
+            "decoy-admin-credential": "AWS_ACCESS_KEY_ID=AKIA_MOCK_12345\nAWS_SECRET_ACCESS_KEY=mock_secret_xyz",
+            "honey-credential-01": "payment_gateway_key=temp_canary_key_abc123",
+            "decoy-server-01": "HTTP/1.1 200 OK\nHello World Decoy",
+        }
         for a in BASE_ASSETS:
             asset_copy = a.model_copy()
             if asset_copy.is_decoy:
                 token = token_map.get(asset_copy.id, f"canary_token_{asset_copy.id}")
                 asset_copy.canary_token = token
+                asset_copy.template_preview = template_map.get(asset_copy.id, f"[TEMPLATE] Monitored Tripwire: {asset_copy.id}")
+                asset_copy.run_id = None
+                asset_copy.evaluation = "not available"
                 if asset_copy.id in cached_map:
                     content = cached_map[asset_copy.id].replace("{{CRED}}", token)
                     content = content.replace("{{CRED_SECRET}}", f"secret_{token[-8:]}")
                     asset_copy.content_preview = content
-                    asset_copy.content_source = "cached"
+                    # If decoys_adapted.csv has no provenance from a real run, show 'hand-authored template', not 'adaption'
+                    asset_copy.content_source = "hand-authored template"
                 else:
-                    asset_copy.content_preview = f"[TEMPLATE] Monitored Tripwire: {asset_copy.id}"
+                    asset_copy.content_preview = asset_copy.template_preview
                     asset_copy.content_source = "template"
             self._assets[asset_copy.id] = asset_copy
 
