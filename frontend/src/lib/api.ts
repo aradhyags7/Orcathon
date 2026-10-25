@@ -39,7 +39,7 @@ export const api = {
   checkHealth: () => request<{ status: string }>('/health'),
   getAssets: () => request<{ assets: Asset[] }>('/assets'),
   getGraph: () => request<GraphData>('/graph'),
-  getScenarios: () => request<{ scenarios: import('../types/api').ScenarioInfo[] }>('/scenarios'),
+  getScenarios: () => request<{ scenarios: unknown[] }>('/scenarios'),
   runSimulation: (scenarioId: string = 'credential_lateral_movement') =>
     request<SimulationResult>('/simulations/run', {
       method: 'POST',
