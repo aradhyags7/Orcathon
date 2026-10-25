@@ -7,7 +7,8 @@ VP of Engineering             L8      $385,000      35%             18,000 units
 Principal Platform Architect  L7      $275,000      25%             9,500 units
 Staff Security Engineer       L6      $235,000      20%             6,000 units
 
-WARNING: Unauthorized access, modification, or transmission of this document is monitored under Security Policy SEC-402 and will trigger an immediate incident ticket.",canary_document
+WARNING: Unauthorized access, modification, or transmission of this document is monitored under Security Policy SEC-402 and will trigger an immediate incident ticket.
+Canary Beacon Signature: {{CRED}}",canary_document
 decoy-admin-credential,Admin Honey Credentials,honey_credential,Cloud Infrastructure,DevOps Kubernetes cluster root administrative credential reference for staging AWS VPC,"# ApexCore Cloud Platform Team - Staging Kubernetes Cluster Auth Runbook
 # Cluster: eks-us-east-1-staging-core-01 | Managed By: infra-ops@apexcore.internal
 export AWS_DEFAULT_REGION=us-east-1
