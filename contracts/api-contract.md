@@ -20,10 +20,16 @@
 | `GET` | `/api/alerts` | List generated detection alerts (`?simulation_id=...`) |
 | `POST` | `/api/alerts/{id}/contain` | SOAR automated host containment & credential revocation |
 | `GET` | `/api/simulations/{id}` | Retrieve completed simulation by ID |
+| `POST` | `/api/simulations/stream` | Stream live attack events, node status shifts & alerts over SSE |
+| `GET` | `/api/simulations/{id}/stream` | Replay existing incident telemetry over SSE stream |
 | `GET` | `/api/incidents/{id}/forensic-report` | Full forensic incident report & executive analysis |
 | `GET` | `/api/incidents/{id}/forensic-report/markdown` | Formatted Markdown forensic report download |
 | `GET` | `/api/incidents/{id}/iocs` | High-fidelity Indicators of Compromise (IPs, files, credentials) |
 | `GET` | `/api/incidents/{id}/stix-bundle` | OASIS STIX 2.1 Threat Intelligence JSON bundle export |
+| `GET` | `/api/soar/playbooks` | List automated defense playbooks (quarantine, tarpit, intel export) |
+| `POST` | `/api/soar/playbooks/{id}/execute` | Execute multi-stage SOAR containment playbook |
+| `GET` | `/api/soar/executions` | Audit log of all automated defense playbook executions |
+| `GET` | `/api/mitre/coverage` | MITRE ATT&CK deception coverage matrix & gap analysis |
 | `POST` | `/api/simulations/{id}/adaption-analysis` | Threat intelligence enrichment via Adaption Labs |
 | `GET` | `/api/adaption/status` | Adaption Labs SDK integration status & pipeline metrics |
 | `POST` | `/api/adaption/curate-dataset` | Curate telemetry into model-ready AI fine-tuning dataset |

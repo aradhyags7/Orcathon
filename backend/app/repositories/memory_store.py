@@ -81,6 +81,17 @@ class MemoryStore:
     def get_asset(self, asset_id: str) -> Optional[Asset]:
         return self._assets.get(asset_id)
 
+    def update_asset_status(self, asset_id: str, status: str) -> None:
+        if asset_id in self._assets:
+            self._assets[asset_id].status = status
+        if status == "isolated":
+            self._isolated_asset_ids.add(asset_id)
+
+    def update_edge_status(self, source: str, target: str, status: str) -> None:
+        for idx, edge in enumerate(self._edges):
+            if (edge.source == source and edge.target == target) or (edge.source == target and edge.target == source):
+                self._edges[idx] = edge.model_copy(update={"status": status})
+
     def contain_alert(self, alert_id: str) -> Optional[dict]:
         target_alert = next((a for a in self._alerts if a.id == alert_id), None)
         if not target_alert:
