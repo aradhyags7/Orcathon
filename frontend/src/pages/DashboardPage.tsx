@@ -7,8 +7,6 @@ import { AttackPathAnalysis } from '../components/AttackPathAnalysis'
 import { IncidentTimeline } from '../components/IncidentTimeline'
 import { CanaryTrapsPanel } from '../components/CanaryTrapsPanel'
 import { AlertDetails } from '../components/AlertDetails'
-import { DecoyContentPanel } from '../components/DecoyContentPanel'
-import { BaselineComparison } from '../components/BaselineComparison'
 import { downloadIncidentReportCsv } from '../lib/exportCsv'
 import { ShieldAlert } from 'lucide-react'
 
@@ -52,30 +50,6 @@ export const DashboardPage: React.FC = () => {
         <div className="live-toast-banner" role="alert">
           <ShieldAlert size={15} className="toast-icon" />
           <span className="toast-text">{toastMessage}</span>
-        </div>
-      )}
-
-      {!backendAvailable && (
-        <div
-          className="backend-offline-banner"
-          role="alert"
-          style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.4)',
-            color: '#fca5a5',
-            padding: '0.5rem 1rem',
-            margin: '0.5rem 1rem',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            fontSize: '0.82rem',
-          }}
-        >
-          <span>⚠️</span>
-          <span>
-            <strong>Backend API Offline:</strong> Operating in offline demonstration mode. Live backend endpoint available at <code>http://localhost:8000/api</code>.
-          </span>
         </div>
       )}
 
@@ -128,12 +102,6 @@ export const DashboardPage: React.FC = () => {
             />
           </div>
         </div>
-
-        {/* Real Decoy Content & Canary Token Inspector */}
-        <DecoyContentPanel assets={graph.nodes} />
-
-        {/* Adaption Labs Synthesis Baseline Comparison */}
-        <BaselineComparison />
       </main>
     </div>
   )

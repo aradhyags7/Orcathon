@@ -107,7 +107,7 @@ const TOPOLOGY_NODES: Record<string, NodePosition> = {
   },
 }
 
-export const NetworkGraph: React.FC<NetworkGraphProps> = ({ graph: _graph, activePath: _activePath = [], currentStep = 6 }) => {
+export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) => {
   const getNodeIcon = (kind: NodePosition['kind']) => {
     switch (kind) {
       case 'external':
