@@ -1,0 +1,152 @@
+{
+  "simulation_id": "sim-001",
+  "scenario_id": "credential_lateral_movement",
+  "status": "completed",
+  "started_at": "2026-10-25T10:15:00Z",
+  "completed_at": "2026-10-25T10:15:04Z",
+  "summary": {
+    "events_count": 4,
+    "alerts_count": 2,
+    "assets_affected": 4
+  },
+  "events": [
+    {
+      "id": "evt-001",
+      "simulation_id": "sim-001",
+      "timestamp": "2026-10-25T10:15:00Z",
+      "event_type": "connection",
+      "source_asset_id": "employee-pc-01",
+      "target_asset_id": "file-server-01",
+      "severity": "low",
+      "message": "Simulated connection established between workstation and file server",
+      "is_decoy_interaction": false,
+      "metadata": {
+        "protocol": "SMB",
+        "port": 445
+      }
+    },
+    {
+      "id": "evt-002",
+      "simulation_id": "sim-001",
+      "timestamp": "2026-10-25T10:15:01Z",
+      "event_type": "decoy_triggered",
+      "source_asset_id": "employee-pc-01",
+      "target_asset_id": "decoy-payroll-file",
+      "severity": "high",
+      "message": "Unauthorized read access to monitored decoy payroll file",
+      "is_decoy_interaction": true,
+      "metadata": {
+        "file_name": "Executive_Salaries_2026.xlsx",
+        "action": "READ_ACCESS",
+        "trap_type": "canary_document"
+      }
+    },
+    {
+      "id": "evt-003",
+      "simulation_id": "sim-001",
+      "timestamp": "2026-10-25T10:15:02Z",
+      "event_type": "file_access",
+      "source_asset_id": "file-server-01",
+      "target_asset_id": "finance-server-01",
+      "severity": "medium",
+      "message": "Lateral probe attempting administrative access against finance database",
+      "is_decoy_interaction": false,
+      "metadata": {
+        "service": "PostgreSQL",
+        "port": 5432
+      }
+    },
+    {
+      "id": "evt-004",
+      "simulation_id": "sim-001",
+      "timestamp": "2026-10-25T10:15:03Z",
+      "event_type": "decoy_triggered",
+      "source_asset_id": "file-server-01",
+      "target_asset_id": "honey-credential-01",
+      "severity": "critical",
+      "message": "Authentication attempted using planted fake AWS root credential",
+      "is_decoy_interaction": true,
+      "metadata": {
+        "credential_alias": "aws_admin_svc_key",
+        "trap_type": "honey_token",
+        "action": "API_CALL_ATTEMPT"
+      }
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alert-001",
+      "simulation_id": "sim-001",
+      "event_id": "evt-002",
+      "created_at": "2026-10-25T10:15:01Z",
+      "severity": "high",
+      "title": "Decoy Canary File Accessed",
+      "description": "Simulated attacker opened decoy document Executive_Salaries_2026.xlsx on file server.",
+      "source_asset_id": "employee-pc-01",
+      "target_asset_id": "decoy-payroll-file",
+      "status": "open",
+      "evidence": [
+        "Monitored decoy asset touched: decoy-payroll-file",
+        "Tripwire beacon fired from employee-pc-01 IP 10.0.1.15",
+        "Process: explorer.exe spawned unapproved script engine"
+      ],
+      "recommended_actions": [
+        "Isolate employee-pc-01 from VLAN segment 10.0.1.0/24",
+        "Revoke active Kerberos ticket granting tickets for employee session",
+        "Verify integrity of neighboring file-server-01 shares"
+      ]
+    },
+    {
+      "id": "alert-002",
+      "simulation_id": "sim-001",
+      "event_id": "evt-004",
+      "created_at": "2026-10-25T10:15:03Z",
+      "severity": "critical",
+      "title": "Honey-Token Credential Infiltration Attempt",
+      "description": "Planted AWS root canary credential used in authentication probe toward finance server.",
+      "source_asset_id": "file-server-01",
+      "target_asset_id": "honey-credential-01",
+      "status": "open",
+      "evidence": [
+        "Canary credential aws_admin_svc_key has zero legitimate production usage",
+        "Direct lateral pivot detected from file-server-01 to finance-server-01",
+        "Signature matches automated credential dumper artifact"
+      ],
+      "recommended_actions": [
+        "Immediately lock compromised admin profile",
+        "Trigger forensic memory dump on file-server-01",
+        "Rotate production database master credentials"
+      ]
+    }
+  ],
+  "attack_path": [
+    {
+      "step": 1,
+      "event_id": "evt-001",
+      "asset_id": "employee-pc-01",
+      "label": "Initial Compromise / Ingress",
+      "timestamp": "2026-10-25T10:15:00Z"
+    },
+    {
+      "step": 2,
+      "event_id": "evt-002",
+      "asset_id": "decoy-payroll-file",
+      "label": "Decoy Canary File Opened",
+      "timestamp": "2026-10-25T10:15:01Z"
+    },
+    {
+      "step": 3,
+      "event_id": "evt-003",
+      "asset_id": "file-server-01",
+      "label": "Lateral Network Movement",
+      "timestamp": "2026-10-25T10:15:02Z"
+    },
+    {
+      "step": 4,
+      "event_id": "evt-004",
+      "asset_id": "honey-credential-01",
+      "label": "Honey-Token Triggered",
+      "timestamp": "2026-10-25T10:15:03Z"
+    }
+  ]
+}
