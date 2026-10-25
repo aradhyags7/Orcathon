@@ -6,6 +6,8 @@ import { SimulationControls } from '../components/SimulationControls'
 import { NetworkGraph } from '../components/NetworkGraph'
 import { AlertPanel } from '../components/AlertPanel'
 import { IncidentTimeline } from '../components/IncidentTimeline'
+import { DecoyContentPanel } from '../components/DecoyContentPanel'
+import { BaselineComparison } from '../components/BaselineComparison'
 
 export const DashboardPage: React.FC = () => {
   const {
@@ -78,6 +80,12 @@ export const DashboardPage: React.FC = () => {
             <AlertPanel alerts={simulation ? simulation.alerts : []} />
           </div>
         </div>
+
+        {/* Real Decoy Content & Canary Token Inspector */}
+        <DecoyContentPanel assets={graph.nodes} />
+
+        {/* Adaption Labs Synthesis Baseline Comparison */}
+        <BaselineComparison />
       </main>
     </div>
   )

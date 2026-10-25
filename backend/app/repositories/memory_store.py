@@ -68,7 +68,39 @@ class MemoryStore:
         self.reset()
 
     def reset(self) -> None:
-        self._assets: dict[str, Asset] = {a.id: a.model_copy() for a in BASE_ASSETS}
+        import csv
+        from pathlib import Path
+        data_csv = Path(__file__).resolve().parent.parent.parent / "data" / "decoys_adapted.csv"
+        cached_map = {}
+        if data_csv.exists():
+            try:
+                with open(data_csv, mode="r", encoding="utf-8") as f:
+                    for row in csv.DictReader(f):
+                        cached_map[row.get("id")] = row.get("content_preview", "")
+            except Exception:
+                pass
+
+        self._assets: dict[str, Asset] = {}
+        token_map = {
+            "decoy-payroll-file": "canary_doc_payroll_8841",
+            "decoy-admin-credential": "AKIA_CANARY_ADMIN_9921",
+            "honey-credential-01": "AKIA_CANARY_PAYMENT_PROD_1142",
+        }
+        for a in BASE_ASSETS:
+            asset_copy = a.model_copy()
+            if asset_copy.is_decoy:
+                token = token_map.get(asset_copy.id, f"canary_token_{asset_copy.id}")
+                asset_copy.canary_token = token
+                if asset_copy.id in cached_map:
+                    content = cached_map[asset_copy.id].replace("{{CRED}}", token)
+                    content = content.replace("{{CRED_SECRET}}", f"secret_{token[-8:]}")
+                    asset_copy.content_preview = content
+                    asset_copy.content_source = "cached"
+                else:
+                    asset_copy.content_preview = f"[TEMPLATE] Monitored Tripwire: {asset_copy.id}"
+                    asset_copy.content_source = "template"
+            self._assets[asset_copy.id] = asset_copy
+
         self._edges: list[NetworkEdge] = [e.model_copy() for e in BASE_EDGES]
         self._events: list[SecurityEvent] = []
         self._alerts: list[Alert] = []

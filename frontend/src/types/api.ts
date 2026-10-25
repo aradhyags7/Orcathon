@@ -21,6 +21,9 @@ export interface Asset {
   status: "healthy" | "suspicious" | "alert" | "isolated";
   is_decoy: boolean;
   description: string;
+  canary_token?: string | null;
+  content_source?: "adaption" | "cached" | "template";
+  content_preview?: string | null;
 }
 
 export interface NetworkEdge {

@@ -12,6 +12,9 @@ class Asset(BaseModel):
     status: AssetStatus = Field(default="healthy", description="Current health/alert status")
     is_decoy: bool = Field(default=False, description="True if asset is a deception tripwire/decoy")
     description: str = Field(default="", description="Asset description or purpose")
+    canary_token: Optional[str] = Field(default=None, description="Locally generated canary token embedded in decoy")
+    content_source: Literal["adaption", "cached", "template"] = Field(default="template", description="Source of decoy content")
+    content_preview: Optional[str] = Field(default=None, description="Preview of generated decoy content")
 
 class AssetsResponse(BaseModel):
     assets: list[Asset]

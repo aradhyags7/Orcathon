@@ -65,3 +65,7 @@ def export_dataset():
     events = [e.model_dump() for e in store.get_events()]
     return adaption_client.generate_jsonl_export(events)
 
+@router.get("/baseline")
+def get_baseline_comparison():
+    return adaption_client.get_baseline_comparison()
+
