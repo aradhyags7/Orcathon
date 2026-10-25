@@ -587,7 +587,7 @@ body {
 }
 
 .line-inferred {
-  background: repeating-linear-gradient(90deg, #9CA3AF, #9CA3AF 3px, transparent 3px, transparent 6px);
+  background: repeating-linear-gradient(90deg, #0284c7, #0284c7 3px, transparent 3px, transparent 6px);
 }
 
 .topology-canvas-container {
@@ -619,6 +619,13 @@ body {
 
 .conn-attack-dashed {
   stroke: #DC2626;
+  stroke-width: 2.2;
+  stroke-dasharray: 6, 5;
+  animation: dashAnimation 1.6s linear infinite;
+}
+
+.conn-inferred-dashed {
+  stroke: #0284c7;
   stroke-width: 2.2;
   stroke-dasharray: 6, 5;
   animation: dashAnimation 1.6s linear infinite;
@@ -873,9 +880,9 @@ body {
 }
 
 .badge-inferred {
-  background-color: #F3F4F6;
-  color: #4B5563;
-  border: 1px dashed #D1D5DB;
+  background-color: #E0F2FE;
+  color: #0369A1;
+  border: 1px dashed #7DD3FC;
 }
 
 .observed-dot {
@@ -889,7 +896,7 @@ body {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background-color: #6B7280;
+  background-color: #0284c7;
 }
 
 .step-connector {

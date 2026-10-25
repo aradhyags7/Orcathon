@@ -359,9 +359,10 @@ export const mockSimulationResult: SimulationResult = {
       asset_id: "decoy-server-01",
       name: "Decoy Server",
       ip: "10.0.0.50",
-      label: "Lateral Movement",
+      label: "Lateral Movement (Canary Pivot)",
       timestamp: "10:26:01",
-      type: "observed",
+      type: "inferred",
+      basis: "inferred",
       kind: "server",
     },
     {

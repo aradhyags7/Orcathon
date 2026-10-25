@@ -19,6 +19,7 @@ interface AttackPathAnalysisProps {
 }
 
 export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
+  steps,
   currentStep = 6,
   stepTimestamps = {},
 }) => {
@@ -31,6 +32,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       defaultTime: '10:24:18',
       icon: UserX,
       theme: 'theme-red',
+      basis: 'observed',
     },
     {
       step: 2,
@@ -40,6 +42,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       defaultTime: '10:24:35',
       icon: Server,
       theme: 'theme-green',
+      basis: 'observed', // Directly recorded telemetry (evt-002: authenticated web exploit)
     },
     {
       step: 3,
@@ -49,6 +52,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       defaultTime: '10:25:02',
       icon: FileSpreadsheet,
       theme: 'theme-amber',
+      basis: 'observed', // Directly recorded telemetry (evt-003: read payroll decoy file)
     },
     {
       step: 4,
@@ -58,6 +62,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       defaultTime: '10:25:28',
       icon: Key,
       theme: 'theme-amber',
+      basis: 'observed', // Directly recorded telemetry (evt-004: decoy admin credentials extracted)
     },
     {
       step: 5,
@@ -67,6 +72,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       defaultTime: '10:26:01',
       icon: Server,
       theme: 'theme-amber',
+      basis: 'inferred', // Canary-token linkage: lateral pivot to decoy server using stolen canary credentials
     },
     {
       step: 6,
@@ -76,11 +82,20 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       defaultTime: '10:26:32',
       icon: Database,
       theme: 'theme-green',
+      basis: 'observed', // Directly recorded telemetry (evt-006: probe on port 5432)
     },
   ]
 
   // Render ONLY the steps that have occurred in real time (No light preview text)
-  const visibleSteps = allSteps.filter((s) => s.step <= currentStep)
+  const visibleSteps = allSteps.filter((s) => s.step <= currentStep).map((s) => {
+    const passed = steps?.find((st) => st.step === s.step)
+    const effectiveBasis = passed?.basis || passed?.type || s.basis
+    const isInferred = effectiveBasis === 'inferred'
+    return {
+      ...s,
+      isInferred,
+    }
+  })
 
   let alertsCount = 0
   if (currentStep >= 3) alertsCount = 1
@@ -109,7 +124,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
           </div>
           <div className="legend-entry">
             <span className="line-legend line-inferred"></span>
-            <span>Inferred</span>
+            <span>Inferred (Canary Link)</span>
           </div>
         </div>
       </div>
@@ -147,9 +162,9 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
                       <span className="step-card-time">{displayTime}</span>
                     </div>
 
-                    <div className={`step-card-badge ${step.step === 2 ? 'badge-inferred' : 'badge-observed'}`}>
-                      <span className={step.step === 2 ? 'inferred-dot' : 'observed-dot'}></span>
-                      <span>{step.step === 2 ? 'Inferred' : 'Observed'}</span>
+                    <div className={`step-card-badge ${step.isInferred ? 'badge-inferred' : 'badge-observed'}`}>
+                      <span className={step.isInferred ? 'inferred-dot' : 'observed-dot'}></span>
+                      <span>{step.isInferred ? 'Inferred' : 'Observed'}</span>
                     </div>
                   </div>
 

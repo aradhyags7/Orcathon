@@ -64,6 +64,7 @@ export interface AttackPathStep {
   label: string;
   timestamp: string;
   type?: "observed" | "inferred";
+  basis?: "recorded" | "inferred" | "observed";
   kind?: Asset["kind"];
 }
 

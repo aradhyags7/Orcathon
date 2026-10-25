@@ -192,6 +192,18 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
             </marker>
 
             <marker
+              id="arrow-inferred"
+              viewBox="0 0 10 10"
+              refX="7"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto"
+            >
+              <polygon points="0 2, 7 5, 0 8" fill="#0284c7" />
+            </marker>
+
+            <marker
               id="arrow-normal"
               viewBox="0 0 10 10"
               refX="6"
@@ -232,7 +244,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
             markerEnd="url(#arrow-normal)"
           />
 
-          {/* 2. Observed Attack Path Segments (Pure animated dashed stroke, zero top-left glitch) */}
+          {/* 2. Attack Path Segments: Observed telemetry vs Inferred Canary-Token Pivot */}
           {currentStep >= 1 && (
             <line
               x1={TOPOLOGY_NODES['external-actor'].x + 26}
@@ -266,14 +278,15 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
             />
           )}
 
+          {/* Canary-token linkage: Lateral pivot to decoy server using stolen credentials */}
           {currentStep >= 4 && (
             <line
               x1={TOPOLOGY_NODES['admin-credentials-decoy'].x}
               y1={TOPOLOGY_NODES['admin-credentials-decoy'].y + 24}
               x2={TOPOLOGY_NODES['decoy-server-01'].x}
               y2={TOPOLOGY_NODES['decoy-server-01'].y - 24}
-              className="conn-attack-dashed"
-              markerEnd="url(#arrow-attack)"
+              className="conn-inferred-dashed"
+              markerEnd="url(#arrow-inferred)"
             />
           )}
 
