@@ -61,7 +61,6 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="header-brand-text">
             <div className="header-brand-title-line">
               <span className="header-brand-title">DeceptiTrace</span>
-              <span className="header-track-tag">Track 03 • ORCATHON</span>
             </div>
             <span className="header-brand-tagline">Cyber Deception • Detect • Trace • Investigate</span>
           </div>
