@@ -12,12 +12,28 @@
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/health` | Backend liveness check |
+| `GET` | `/api/scenarios` | List available attack simulation scenarios |
 | `GET` | `/api/assets` | Retrieve all network assets (normal + decoys) |
 | `GET` | `/api/graph` | Retrieve topology nodes and edges with traversal status |
 | `POST` | `/api/simulations/run` | Execute controlled attack scenario and return full result |
 | `GET` | `/api/events` | List recorded security events (`?simulation_id=...`) |
 | `GET` | `/api/alerts` | List generated detection alerts (`?simulation_id=...`) |
+| `POST` | `/api/alerts/{id}/contain` | SOAR automated host containment & credential revocation |
 | `GET` | `/api/simulations/{id}` | Retrieve completed simulation by ID |
+| `POST` | `/api/simulations/stream` | Stream live attack events, node status shifts & alerts over SSE |
+| `GET` | `/api/simulations/{id}/stream` | Replay existing incident telemetry over SSE stream |
+| `GET` | `/api/incidents/{id}/forensic-report` | Full forensic incident report & executive analysis |
+| `GET` | `/api/incidents/{id}/forensic-report/markdown` | Formatted Markdown forensic report download |
+| `GET` | `/api/incidents/{id}/iocs` | High-fidelity Indicators of Compromise (IPs, files, credentials) |
+| `GET` | `/api/incidents/{id}/stix-bundle` | OASIS STIX 2.1 Threat Intelligence JSON bundle export |
+| `GET` | `/api/soar/playbooks` | List automated defense playbooks (quarantine, tarpit, intel export) |
+| `POST` | `/api/soar/playbooks/{id}/execute` | Execute multi-stage SOAR containment playbook |
+| `GET` | `/api/soar/executions` | Audit log of all automated defense playbook executions |
+| `GET` | `/api/mitre/coverage` | MITRE ATT&CK deception coverage matrix & gap analysis |
+| `POST` | `/api/simulations/{id}/adaption-analysis` | Threat intelligence enrichment via Adaption Labs |
+| `GET` | `/api/adaption/status` | Adaption Labs SDK integration status & pipeline metrics |
+| `POST` | `/api/adaption/curate-dataset` | Curate telemetry into model-ready AI fine-tuning dataset |
+| `GET` | `/api/adaption/export-dataset` | Download curated .jsonl instruction dataset for model SFT |
 | `POST` | `/api/reset` | Clear simulation state while retaining base assets |
 
 ---
@@ -27,10 +43,36 @@
 ### Enums
 - **Severity**: `"info"` | `"low"` | `"medium"` | `"high"` | `"critical"`
 - **AssetKind**: `"endpoint"` | `"server"` | `"decoy_file"` | `"honey_credential"`
-- **AssetStatus**: `"healthy"` | `"suspicious"` | `"alert"`
-- **EdgeStatus**: `"normal"` | `"traversed"` | `"suspicious"`
+- **AssetStatus**: `"healthy"` | `"suspicious"` | `"alert"` | `"isolated"`
+- **EdgeStatus**: `"normal"` | `"traversed"` | `"suspicious"` | `"blocked"`
 - **EventType**: `"connection"` | `"file_access"` | `"credential_attempt"` | `"decoy_triggered"`
-- **AlertStatus**: `"open"` | `"acknowledged"` | `"resolved"`
+- **Basis**: `"recorded"` | `"inferred"`
+- **ContentSource**: `"adaption"` | `"cached"` | `"template"`
+
+### Attack Path Step Model
+```json
+{
+  "step": 1,
+  "event_id": "evt-b108a2",
+  "from_asset_id": "employee-pc-01",
+  "to_asset_id": "file-server-01",
+  "via_asset_id": null,
+  "basis": "recorded",
+  "asset_id": "employee-pc-01",
+  "label": "Initial Ingress / Infiltration",
+  "timestamp": "2026-10-25T07:42:48Z"
+}
+```
+
+### MITRE ATT&CK Model
+```json
+{
+  "technique_id": "T1486",
+  "technique_name": "Data Encrypted for Impact",
+  "tactic": "Impact"
+}
+```
+
 
 ---
 

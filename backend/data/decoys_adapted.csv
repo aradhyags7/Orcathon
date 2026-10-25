@@ -1,0 +1,80 @@
+id,name,kind,category,prompt,content_preview,canary_token_type
+decoy-payroll-file,Executive Salary Decoy,decoy_file,Human Resources,Confidential Q4 executive compensation and executive salary bands for ApexCore Engineering,"APEXCORE TECHNOLOGIES - CONFIDENTIAL COMPENSATION SCHEDULE (Q4 2026)
+Document ID: AC-HR-EXEC-2026-V3 | Access Level: Tier 1 Confidential
+================================================================================
+Role                          Band    Base (USD)    Target Bonus    Equity (RSU)
+VP of Engineering             L8      $385,000      35%             18,000 units
+Principal Platform Architect  L7      $275,000      25%             9,500 units
+Staff Security Engineer       L6      $235,000      20%             6,000 units
+
+WARNING: Unauthorized access, modification, or transmission of this document is monitored under Security Policy SEC-402 and will trigger an immediate incident ticket.
+Canary Beacon Signature: {{CRED}}",canary_document
+decoy-admin-credential,Admin Honey Credentials,honey_credential,Cloud Infrastructure,DevOps Kubernetes cluster root administrative credential reference for staging AWS VPC,"# ApexCore Cloud Platform Team - Staging Kubernetes Cluster Auth Runbook
+# Cluster: eks-us-east-1-staging-core-01 | Managed By: infra-ops@apexcore.internal
+export AWS_DEFAULT_REGION=us-east-1
+export AWS_ACCESS_KEY_ID={{CRED}}
+export AWS_SECRET_ACCESS_KEY={{CRED_SECRET}}
+export KUBECONFIG=/opt/apexcore/secrets/kubeconfig-admin.yaml
+
+# Notice: Use this role strictly for emergency disaster recovery operations.
+# All API calls to sts:GetCallerIdentity and ec2:DescribeInstances are logged.",aws_iam_key
+honey-credential-01,Planted AWS Admin Honey-Token,honey_credential,Cloud Infrastructure,Production payment processing service account API key reference,"[apexcore-payment-gateway-prod]
+aws_access_key_id = {{CRED}}
+aws_secret_access_key = {{CRED_SECRET}}
+region = us-west-2
+output = json
+# Monitored Production Gateway Key - Zero authorized human access permitted.",aws_iam_key
+decoy-server-01,Decoy Honeypot Server,server,Network Service,Internal sandbox honeypot service presenting fake administrative RPC listener,"HTTP/1.1 200 OK
+Server: ApexCore-Internal-Gateway/2.4.1
+X-Cluster-Node: srv-decoy-sandbox-01.corp.apexcore.internal
+Authentication: Required (Negotiate/NTLM)
+Content-Type: application/json
+
+{"status":"listening","sandbox_environment":true,"node_id":"decoy-server-01"}",canary_endpoint
+decoy-database-table,Customer PII Canary Table,decoy_file,Database Storage,Database schema and canary rows for customer payment ledger,"CREATE TABLE apexcore_customer_billing_canary (
+    account_id VARCHAR(64) PRIMARY KEY,
+    customer_name VARCHAR(128) NOT NULL,
+    payment_token VARCHAR(256) NOT NULL, -- Token: {{CRED}}
+    billing_tier VARCHAR(32) DEFAULT 'ENTERPRISE',
+    last_audit_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- High-fidelity honey rows inserted for SIEM breach tripwire verification.",canary_database
+decoy-vpn-profile,Disaster Recovery WireGuard Profile,decoy_file,Network Infrastructure,Disaster recovery WireGuard VPN peer configuration profile,"[Interface]
+PrivateKey = {{CRED}}
+Address = 10.88.0.42/24
+DNS = 10.88.0.1
+
+[Peer]
+PublicKey = vpn-peer-dr-us-east.corp.apexcore.internal=
+Endpoint = 198.51.100.22:51820
+AllowedIPs = 10.88.0.0/16",canary_vpn
+decoy-backup-script,Nightly Backup S3 Script,decoy_file,DevOps Automation,Automated database backup script with embedded S3 upload keys,"#!/usr/bin/env bash
+# ApexCore Automated Nightly Database Snapshot Utility (v2.1)
+set -eo pipefail
+S3_BUCKET='s3://apexcore-internal-backups-restricted/'
+AWS_KEY='{{CRED}}'
+echo '[INFO] Synchronizing production postgres dumps to secure archive...'
+aws s3 sync /var/backups/psql \"${S3_BUCKET}\" --exclude '*' --include '*.enc'",canary_script
+decoy-api-token,Stripe Webhook Signing Token,honey_credential,Application Secrets,Sandbox payment gateway webhook endpoint secret verification,"# ApexCore Webhook Verification Secret
+STRIPE_WEBHOOK_SECRET=whsec_{{CRED}}
+APEX_BILLING_ENV=production_mirror
+AUDIT_ENDPOINT=https://telemetry.corp.apexcore.internal/audit/webhooks",canary_webhook
+decoy-ssh-key,Bastion Jumpbox Authorized Key,honey_credential,Identity & Access,Authorized SSH deployment key for corporate jumpbox infrastructure,"# Deploy key for ci-runner@bastion-01.apexcore.internal
+ssh-ed25519 {{CRED}} devops-automation-canary@apexcore
+# Any authentication attempt with this public key triggers an instant SOC quarantine alert.",canary_ssh
+decoy-customer-lead,Q4 Enterprise Sales Pipeline,decoy_file,Sales & Executive,Confidential pipeline contract figures and partner discount schedules,"APEXCORE REVENUE OPERATIONS - Q4 2026 DEALS OVER $500K
+Account Name          ACV           Stage          Partner Discount   Lead Contact
+Fintech Global Corp   $1,450,000    Negotiation    18%                VP Ops
+Aegis Health Systems  $820,000      Contract Sent  12%                CISO
+Starlight Data Labs   $650,000      Commit         15%                Dir Infra",canary_document
+decoy-incident-playbook,SOC Incident Response Playbook,decoy_file,Security Operations,Incident response runbook for compromised cloud credentials,"## APEXCORE SECURITY OPERATIONS: PLAYBOOK SEC-IR-09
+### Severe Incident: AWS Cloud Root Role Compromise
+1. Execute automated quarantine playbook via DeceptiTrace SOAR API.
+2. Invalidate active session tokens: `aws iam update-access-key --status Inactive`.
+3. Route attacker IP to decoy tarpit proxy to preserve investigative telemetry.",canary_runbook
+decoy-wifi-config,RADIUS Wi-Fi Enterprise Profile,decoy_file,IT Operations,Corporate 802.1x RADIUS guest and employee network profile,"<NetworkConfiguration>
+  <SSID>ApexCore-Secure-Corp</SSID>
+  <Authentication>WPA2-Enterprise</Authentication>
+  <EAPMethod>PEAP-MSCHAPv2</EAPMethod>
+  <EnrollmentCertificateToken>{{CRED}}</EnrollmentCertificateToken>
+</NetworkConfiguration>",canary_wifi

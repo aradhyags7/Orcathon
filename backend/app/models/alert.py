@@ -1,8 +1,8 @@
-from typing import Literal
+from typing import Literal, Optional
 from pydantic import BaseModel, Field
-from .event import Severity
+from .event import Severity, MitreAttack
 
-AlertStatus = Literal["open", "acknowledged", "resolved"]
+AlertStatus = Literal["open", "acknowledged", "resolved", "contained"]
 
 class Alert(BaseModel):
     id: str = Field(..., description="Unique alert identifier")
@@ -17,6 +17,7 @@ class Alert(BaseModel):
     status: AlertStatus = Field(default="open", description="Alert lifecycle state")
     evidence: list[str] = Field(default_factory=list, description="List of concrete evidence facts")
     recommended_actions: list[str] = Field(default_factory=list, description="Defensive remediation recommendations")
+    mitre_attack: Optional[MitreAttack] = Field(default=None, description="Associated MITRE ATT&CK technique")
 
 class AlertsResponse(BaseModel):
     alerts: list[Alert]
