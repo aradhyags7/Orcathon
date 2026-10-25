@@ -76,7 +76,7 @@ export const DashboardPage: React.FC = () => {
             />
           </div>
 
-          {/* Middle Column (24%): Incident Timeline occupying full vertical height */}
+          {/* Middle Column (24%): Incident Timeline on top + Decoy Tripwires directly underneath */}
           <div className="grid-col-mid">
             <IncidentTimeline
               events={simulation.events || []}
@@ -86,20 +86,20 @@ export const DashboardPage: React.FC = () => {
               selectedEventId={selectedEventId}
               onSelectEvent={setSelectedEventId}
             />
+            <CanaryTrapsPanel
+              currentStep={currentStep}
+              stepTimestamps={stepTimestamps}
+              assets={graph.nodes}
+            />
           </div>
 
-          {/* Right Column (24%): Alert Details on top + Decoy Tripwires horizontally at the bottom */}
+          {/* Right Column (24%): Alert Details occupying full vertical height */}
           <div className="grid-col-right">
             <AlertDetails
               alerts={simulation.alerts || []}
               currentStep={currentStep}
               stepTimestamps={stepTimestamps}
               isCompleted={currentStep > 0}
-            />
-            <CanaryTrapsPanel
-              currentStep={currentStep}
-              stepTimestamps={stepTimestamps}
-              assets={graph.nodes}
             />
           </div>
         </div>

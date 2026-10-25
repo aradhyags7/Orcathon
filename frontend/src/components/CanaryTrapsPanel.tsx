@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Radio, ShieldCheck, ShieldAlert, FileText, Sparkles, Key, Server, Database, FileSpreadsheet } from 'lucide-react'
+import { Radio, ShieldCheck, ShieldAlert, FileText, Sparkles, Key, Server, Database } from 'lucide-react'
 import type { Asset } from '../types/api'
 
 interface CanaryTrapsPanelProps {
@@ -179,58 +179,66 @@ export const CanaryTrapsPanel: React.FC<CanaryTrapsPanelProps> = ({
                 <ShieldCheck size={14} className="safe-icon-green" />
               )}
               <span className="canary-active-title">
-                {isAnyTripped ? 'Intruder Contact Detected' : 'Perimeter Armed • 10.0.0.0/24'}
+                {isAnyTripped ? 'Intruder Contact Detected' : 'Perimeter Armed • Zero Contact'}
               </span>
             </div>
             <span className="canary-meta-time">{displayTime.includes('IST') ? displayTime : `${displayTime} IST`}</span>
           </div>
 
-          {/* 3 Configured Decoy Assets: Horizontal Row */}
+          {/* Subnet Meta Line */}
+          <div className="canary-subnet-meta">
+            <span className="subnet-label">Monitored Subnet:</span>
+            <span className="subnet-code">10.0.0.0/24</span>
+            <span className="subnet-sep">•</span>
+            <span className="subnet-note">Automated Alerting</span>
+          </div>
+
+          {/* 3 Configured Decoy Assets */}
           <div className="canary-endpoints-section">
             <ul className="canary-endpoints-list">
               {/* Decoy 1: Payroll Records (10.0.0.30) */}
               <li className={`canary-endpoint-item ${isPayrollTripped ? 'item-tripped' : ''}`}>
-                <div className="endpoint-icon-badge">
-                  <FileSpreadsheet size={15} />
-                </div>
-                <div className="endpoint-meta-group">
+                <div className="endpoint-item-top">
                   <span className="endpoint-name">Payroll Records</span>
-                  <span className="endpoint-ip">10.0.0.30</span>
+                  <span className={`endpoint-status-pill ${isPayrollTripped ? 'pill-tripped' : 'pill-monitoring'}`}>
+                    <span className="pill-dot"></span>
+                    {isPayrollTripped ? 'Triggered' : 'Monitoring'}
+                  </span>
                 </div>
-                <span className={`endpoint-status-pill ${isPayrollTripped ? 'pill-tripped' : 'pill-monitoring'}`}>
-                  <span className="pill-dot"></span>
-                  {isPayrollTripped ? 'Triggered' : 'Monitoring'}
-                </span>
+                <div className="endpoint-item-bottom">
+                  <span className="endpoint-ip">10.0.0.30</span>
+                  <span className="endpoint-desc">fake .xlsx canary trap</span>
+                </div>
               </li>
 
               {/* Decoy 2: Admin Credentials (10.0.0.40) */}
               <li className={`canary-endpoint-item ${isCredentialsTripped ? 'item-tripped' : ''}`}>
-                <div className="endpoint-icon-badge">
-                  <Key size={15} />
-                </div>
-                <div className="endpoint-meta-group">
+                <div className="endpoint-item-top">
                   <span className="endpoint-name">Admin Credentials</span>
-                  <span className="endpoint-ip">10.0.0.40</span>
+                  <span className={`endpoint-status-pill ${isCredentialsTripped ? 'pill-tripped' : 'pill-monitoring'}`}>
+                    <span className="pill-dot"></span>
+                    {isCredentialsTripped ? 'Triggered' : 'Monitoring'}
+                  </span>
                 </div>
-                <span className={`endpoint-status-pill ${isCredentialsTripped ? 'pill-tripped' : 'pill-monitoring'}`}>
-                  <span className="pill-dot"></span>
-                  {isCredentialsTripped ? 'Triggered' : 'Monitoring'}
-                </span>
+                <div className="endpoint-item-bottom">
+                  <span className="endpoint-ip">10.0.0.40</span>
+                  <span className="endpoint-desc">planted decoy root key</span>
+                </div>
               </li>
 
               {/* Decoy 3: Decoy Server (10.0.0.50) */}
               <li className={`canary-endpoint-item ${isServerTripped ? 'item-tripped' : ''}`}>
-                <div className="endpoint-icon-badge">
-                  <Server size={15} />
-                </div>
-                <div className="endpoint-meta-group">
+                <div className="endpoint-item-top">
                   <span className="endpoint-name">Decoy Server</span>
-                  <span className="endpoint-ip">10.0.0.50</span>
+                  <span className={`endpoint-status-pill ${isServerTripped ? 'pill-tripped' : 'pill-monitoring'}`}>
+                    <span className="pill-dot"></span>
+                    {isServerTripped ? 'Triggered' : 'Monitoring'}
+                  </span>
                 </div>
-                <span className={`endpoint-status-pill ${isServerTripped ? 'pill-tripped' : 'pill-monitoring'}`}>
-                  <span className="pill-dot"></span>
-                  {isServerTripped ? 'Triggered' : 'Monitoring'}
-                </span>
+                <div className="endpoint-item-bottom">
+                  <span className="endpoint-ip">10.0.0.50</span>
+                  <span className="endpoint-desc">isolated honeypot node</span>
+                </div>
               </li>
             </ul>
           </div>
