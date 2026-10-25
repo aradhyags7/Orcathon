@@ -38,6 +38,14 @@ BASE_ASSETS: list[Asset] = [
         description="Monitored decoy spreadsheet (Executive_Salaries_2026.xlsx) with canary token",
     ),
     Asset(
+        id="decoy-admin-credential",
+        name="Decoy Admin Credential",
+        kind="honey_credential",
+        status="healthy",
+        is_decoy=True,
+        description="Planted high-privilege honey credential with zero authorized legitimate usage",
+    ),
+    Asset(
         id="honey-credential-01",
         name="Planted AWS Admin Honey-Token",
         kind="honey_credential",
@@ -51,6 +59,7 @@ BASE_EDGES: list[NetworkEdge] = [
     NetworkEdge(source="employee-pc-01", target="file-server-01", status="normal"),
     NetworkEdge(source="employee-pc-01", target="decoy-payroll-file", status="normal"),
     NetworkEdge(source="file-server-01", target="finance-server-01", status="normal"),
+    NetworkEdge(source="file-server-01", target="decoy-admin-credential", status="normal"),
     NetworkEdge(source="file-server-01", target="honey-credential-01", status="normal"),
 ]
 
