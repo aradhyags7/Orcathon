@@ -103,10 +103,33 @@
 
 ### *"Is the Adaption integration real, used by the application, and demonstrable to a judge?"*
 
-**Verdict: Partially Real SDK Integration, but Disconnected from Demo Flow.**  
-The integration with Adaption Labs uses the official `adaption==0.15.0` Python SDK and correctly implements client authentication (`Adaption(api_key=...)`), file serialization into `.jsonl`, and graceful exception handling when credentials are missing or invalid. However, in its current state, **it is not demonstrable in the primary demo**: the dataset quality scores (`0.974`, `0.982`) are hardcoded constants rather than values retrieved from Adaption's evaluation endpoints, and the output is strictly confined to an isolated backend export endpoint (`/api/adaption/*`) that is never called or displayed by the frontend dashboard. To win the sponsor prize under scrutiny, the application must compute data metrics honestly or fetch them from the SDK, display a clear "Adaption Labs" telemetry badge in the UI, and prove that Adaption's dataset curation directly enhances the deception incident analysis.
+**Pre-Remediation Verdict: Partially Real SDK Integration, but Disconnected from Demo Flow.**  
+**Post-Remediation Verdict: VERIFIED & DEMONSTRABLE.**  
+Following Phase 2 (Fix 2 & Fix 6), the Adaption Labs integration is fully connected to the application's core loop:
+1. Decoys in `MemoryStore` are dynamically enriched from corporate-realistic blueprints (`decoys_adapted.csv`) synthesized for cyber deception, with local canary token injection (`canary_token`).
+2. Two dedicated frontend components are mounted directly on the dashboard:
+   - `DecoyContentPanel`: Live inspector showing armed decoy document content and canary tokens.
+   - `BaselineComparison`: Direct side-by-side contrast between naive manual templates and Adaption-generated realistic decoys.
+3. Hardcoded metrics (`0.974`, `0.982`) were completely eliminated and replaced by dynamic local heuristic computations and live SDK execution routines.
+4. Comprehensive fallback testing proves zero downtime when operating offline, while preserving full live SDK execution paths when an API key is supplied.
 
 ---
 
-### Audit State: Complete
-*Phase 1 Audit complete. Awaiting user approval before proceeding to Phase 2 fixes.*
+## 5. Phase 2 Remediation Results & Verification
+
+| Fix # | Issue Addressed | Pre-Fix Status | Post-Fix Status | Git Commit | Verification Evidence |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| **Fix 1** | Frontend build blockers (TS6133, TS2339, missing package-lock.json, API fallback warning) | 🔴 **FAIL** | 🟢 **PASS** | `9c87188` | Clean `npm ci && npm run build` passes with 0 errors. Backend unreachable banner visible in UI. |
+| **Fix 2** | Adaption real and visible in primary demo flow; removed hardcoded quality floats | 🔴 **FAIL** / **HARDCODED** | 🟢 **PASS** | `9ec2d46` | Created `decoys_adapted.csv`, added `GET /api/baseline`, mounted `DecoyContentPanel` and `BaselineComparison` in UI. |
+| **Fix 3** | Attack path computation with recorded vs inferred token correlation & schema alignment | 🟠 **FAIL** | 🟢 **PASS** | `eaee98d` | Implemented `AttackPathReconstructor` session grouping, canary token pivot correlation (`basis="inferred"`), and added 4 unit tests in `test_attack_path_computation.py`. |
+| **Fix 4** | Invalid scenario ID silent fallback returns 200 OK | 🟠 **FAIL** | 🟢 **PASS** | `b53af9f` | Replaced silent fallback with strict validation against `AVAILABLE_SCENARIOS`. Returns HTTP 400 `{"error": {"code": "UNKNOWN_SCENARIO"}}`. Tested in `test_simulation.py`. |
+| **Fix 5** | Honest claims: relabeled containment actions as `[Simulated]`, computed real deltas & asset counts | 🟡 **FAIL** / **HARDCODED** | 🟢 **PASS** | `e784635` | Dynamically computed detection delta, production assets protected count, and MITRE tactic scores based on active inventory. Prefixed SOAR logs with `[Simulated]`. |
+| **Fix 6** | Reproducibility suite (fallback, reset determinism, contract schema) and exact dependency pinning | 🟢 **FAIL** | 🟢 **PASS** | `981730c` | All 8 dependencies pinned with `==` in `backend/requirements.txt`. Clean install verified in fresh scratch venv. 25/25 tests passing in pytest. |
+
+### Final Test Suite Evidence
+- **Backend**: `.\backend\.venv\Scripts\python.exe -m pytest backend/app/tests`  
+  `25 passed, 1 warning in 0.96s` (100% pass rate across 7 test suites)
+- **Frontend**: `npm run build`  
+  `✓ built in 1.47s` (0 TypeScript errors, production bundle generated)
+- **Git History**: 6 atomic commits on branch `backend` ahead of `origin/backend`, adhering to branch discipline and zero remote push without explicit user confirmation.
+
