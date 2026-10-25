@@ -147,9 +147,9 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
                       <span className="step-card-time">{displayTime}</span>
                     </div>
 
-                    <div className="step-card-badge">
-                      <span className="observed-dot"></span>
-                      <span>Observed</span>
+                    <div className={`step-card-badge ${step.step === 2 ? 'badge-inferred' : 'badge-observed'}`}>
+                      <span className={step.step === 2 ? 'inferred-dot' : 'observed-dot'}></span>
+                      <span>{step.step === 2 ? 'Inferred' : 'Observed'}</span>
                     </div>
                   </div>
 

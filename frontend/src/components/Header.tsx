@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Play, RotateCcw, Download, Shield } from 'lucide-react'
+import { Play, RotateCcw, Download } from 'lucide-react'
 
 interface HeaderProps {
   backendAvailable: boolean
@@ -53,19 +53,6 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="top-header-bar">
       <div className="header-meta-group">
-        {/* Top-Left Brand Emblem & Tagline as requested by user */}
-        <div className="header-brand-pill">
-          <div className="header-brand-icon-wrap">
-            <Shield size={18} className="header-brand-shield" strokeWidth={2.4} />
-          </div>
-          <div className="header-brand-copy">
-            <span className="header-brand-title">DeceptiTrace</span>
-            <span className="header-brand-tagline">Cyber Deception • Detect • Trace • Investigate</span>
-          </div>
-        </div>
-
-        <div className="header-v-divider" aria-hidden="true"></div>
-
         <div className="env-pill">
           <span className="env-dot"></span>
           <span className="env-text">Simulation Environment</span>

@@ -28,42 +28,44 @@ interface NodePosition {
 
 // Optimized node coordinates: Wide 160px gap between Payroll Records (440) and Admin Credentials (600)
 // This completely prevents any possibility of text overlap!
+// Optimized node coordinates distributed across 880x400 canvas (occupying >90% width/height)
+// Wide spacing prevents text collisions and makes topology the clear visual centerpiece.
 const TOPOLOGY_NODES: Record<string, NodePosition> = {
   'employee-pc-01': {
-    x: 290,
-    y: 100,
+    x: 240,
+    y: 70,
     name: 'Employee PC',
     ip: '10.0.0.12',
     kind: 'endpoint',
     isDecoy: false,
   },
   'file-server-01': {
-    x: 440,
-    y: 100,
+    x: 450,
+    y: 70,
     name: 'File Server',
     ip: '10.0.0.8',
     kind: 'server',
     isDecoy: false,
   },
   'external-actor': {
-    x: 155,
-    y: 215,
+    x: 75,
+    y: 190,
     name: 'External Actor',
     ip: '203.0.113.44',
     kind: 'external',
     isDecoy: false,
   },
   'web-server-01': {
-    x: 290,
-    y: 215,
+    x: 240,
+    y: 190,
     name: 'Web Server',
     ip: '10.0.0.5',
     kind: 'server',
     isDecoy: false,
   },
   'decoy-payroll-file': {
-    x: 440,
-    y: 215,
+    x: 450,
+    y: 190,
     name: 'Payroll Records',
     subName: '(decoy file)',
     ip: '10.0.0.30',
@@ -71,8 +73,8 @@ const TOPOLOGY_NODES: Record<string, NodePosition> = {
     isDecoy: true,
   },
   'admin-credentials-decoy': {
-    x: 600,
-    y: 215,
+    x: 650,
+    y: 190,
     name: 'Admin Credentials',
     subName: '(decoy)',
     ip: '10.0.0.40',
@@ -80,24 +82,24 @@ const TOPOLOGY_NODES: Record<string, NodePosition> = {
     isDecoy: true,
   },
   'hr-workstation-01': {
-    x: 400,
-    y: 325,
+    x: 450,
+    y: 310,
     name: 'HR Workstation',
     ip: '10.0.0.14',
     kind: 'endpoint',
     isDecoy: false,
   },
   'decoy-server-01': {
-    x: 600,
-    y: 325,
+    x: 650,
+    y: 310,
     name: 'Decoy Server',
     ip: '10.0.0.50',
     kind: 'server',
     isDecoy: true,
   },
   'database-server-01': {
-    x: 720,
-    y: 325,
+    x: 815,
+    y: 310,
     name: 'Database Server',
     ip: '10.0.0.10',
     kind: 'server',
@@ -170,7 +172,8 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
       {/* SVG Canvas - NO UNPOSITIONED ELEMENTS AT (0,0) */}
       <div className="topology-canvas-container">
         <svg
-          viewBox="0 0 780 395"
+          viewBox="0 0 880 390"
+          preserveAspectRatio="xMidYMid meet"
           className="topology-svg"
           role="img"
           aria-label="DeceptiTrace Interactive Topology Canvas"
@@ -179,7 +182,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
             <marker
               id="arrow-attack"
               viewBox="0 0 10 10"
-              refX="6"
+              refX="7"
               refY="5"
               markerWidth="6"
               markerHeight="6"
@@ -203,9 +206,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
 
           {/* 1. Normal Connections */}
           <line
-            x1={TOPOLOGY_NODES['employee-pc-01'].x + 22}
+            x1={TOPOLOGY_NODES['employee-pc-01'].x + 24}
             y1={TOPOLOGY_NODES['employee-pc-01'].y}
-            x2={TOPOLOGY_NODES['file-server-01'].x - 22}
+            x2={TOPOLOGY_NODES['file-server-01'].x - 24}
             y2={TOPOLOGY_NODES['file-server-01'].y}
             className="conn-normal"
             markerEnd="url(#arrow-normal)"
@@ -213,18 +216,18 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
 
           <line
             x1={TOPOLOGY_NODES['employee-pc-01'].x}
-            y1={TOPOLOGY_NODES['employee-pc-01'].y + 22}
+            y1={TOPOLOGY_NODES['employee-pc-01'].y + 24}
             x2={TOPOLOGY_NODES['web-server-01'].x}
-            y2={TOPOLOGY_NODES['web-server-01'].y - 22}
+            y2={TOPOLOGY_NODES['web-server-01'].y - 24}
             className="conn-normal"
             markerEnd="url(#arrow-normal)"
           />
 
           <line
-            x1={TOPOLOGY_NODES['web-server-01'].x + 18}
-            y1={TOPOLOGY_NODES['web-server-01'].y + 18}
-            x2={TOPOLOGY_NODES['hr-workstation-01'].x - 18}
-            y2={TOPOLOGY_NODES['hr-workstation-01'].y - 18}
+            x1={TOPOLOGY_NODES['web-server-01'].x + 21}
+            y1={TOPOLOGY_NODES['web-server-01'].y + 12}
+            x2={TOPOLOGY_NODES['hr-workstation-01'].x - 21}
+            y2={TOPOLOGY_NODES['hr-workstation-01'].y - 12}
             className="conn-normal"
             markerEnd="url(#arrow-normal)"
           />
@@ -232,9 +235,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
           {/* 2. Observed Attack Path Segments (Pure animated dashed stroke, zero top-left glitch) */}
           {currentStep >= 1 && (
             <line
-              x1={TOPOLOGY_NODES['external-actor'].x + 22}
+              x1={TOPOLOGY_NODES['external-actor'].x + 26}
               y1={TOPOLOGY_NODES['external-actor'].y}
-              x2={TOPOLOGY_NODES['web-server-01'].x - 22}
+              x2={TOPOLOGY_NODES['web-server-01'].x - 24}
               y2={TOPOLOGY_NODES['web-server-01'].y}
               className="conn-attack-dashed"
               markerEnd="url(#arrow-attack)"
@@ -243,9 +246,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
 
           {currentStep >= 2 && (
             <line
-              x1={TOPOLOGY_NODES['web-server-01'].x + 22}
+              x1={TOPOLOGY_NODES['web-server-01'].x + 24}
               y1={TOPOLOGY_NODES['web-server-01'].y}
-              x2={TOPOLOGY_NODES['decoy-payroll-file'].x - 22}
+              x2={TOPOLOGY_NODES['decoy-payroll-file'].x - 24}
               y2={TOPOLOGY_NODES['decoy-payroll-file'].y}
               className="conn-attack-dashed"
               markerEnd="url(#arrow-attack)"
@@ -254,9 +257,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
 
           {currentStep >= 3 && (
             <line
-              x1={TOPOLOGY_NODES['decoy-payroll-file'].x + 22}
+              x1={TOPOLOGY_NODES['decoy-payroll-file'].x + 24}
               y1={TOPOLOGY_NODES['decoy-payroll-file'].y}
-              x2={TOPOLOGY_NODES['admin-credentials-decoy'].x - 22}
+              x2={TOPOLOGY_NODES['admin-credentials-decoy'].x - 24}
               y2={TOPOLOGY_NODES['admin-credentials-decoy'].y}
               className="conn-attack-dashed"
               markerEnd="url(#arrow-attack)"
@@ -266,9 +269,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
           {currentStep >= 4 && (
             <line
               x1={TOPOLOGY_NODES['admin-credentials-decoy'].x}
-              y1={TOPOLOGY_NODES['admin-credentials-decoy'].y + 22}
+              y1={TOPOLOGY_NODES['admin-credentials-decoy'].y + 24}
               x2={TOPOLOGY_NODES['decoy-server-01'].x}
-              y2={TOPOLOGY_NODES['decoy-server-01'].y - 22}
+              y2={TOPOLOGY_NODES['decoy-server-01'].y - 24}
               className="conn-attack-dashed"
               markerEnd="url(#arrow-attack)"
             />
@@ -276,9 +279,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
 
           {currentStep >= 5 && (
             <line
-              x1={TOPOLOGY_NODES['decoy-server-01'].x + 22}
+              x1={TOPOLOGY_NODES['decoy-server-01'].x + 24}
               y1={TOPOLOGY_NODES['decoy-server-01'].y}
-              x2={TOPOLOGY_NODES['database-server-01'].x - 22}
+              x2={TOPOLOGY_NODES['database-server-01'].x - 24}
               y2={TOPOLOGY_NODES['database-server-01'].y}
               className="conn-attack-dashed"
               markerEnd="url(#arrow-attack)"
@@ -345,7 +348,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
                 <circle
                   cx="0"
                   cy="0"
-                  r={isActor ? '24' : '20'}
+                  r={isActor ? '26' : '23'}
                   className={circleClass}
                 />
 
@@ -364,22 +367,22 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
                 </foreignObject>
 
                 {/* Node Title with optional subtitle to prevent horizontal text collision */}
-                <text x="0" y="30" className="node-label-title" textAnchor="middle">
+                <text x="0" y="34" className="node-label-title" textAnchor="middle">
                   {node.name}
                 </text>
                 {hasSub && (
-                  <text x="0" y="40" className="node-label-sub" textAnchor="middle">
+                  <text x="0" y="45" className="node-label-sub" textAnchor="middle">
                     {node.subName}
                   </text>
                 )}
 
                 {/* Node IP Address */}
-                <text x="0" y={hasSub ? "51" : "42"} className="node-label-ip" textAnchor="middle">
+                <text x="0" y={hasSub ? "57" : "47"} className="node-label-ip" textAnchor="middle">
                   {node.ip}
                 </text>
 
                 {/* Status Pill Badge */}
-                <foreignObject x="-34" y={hasSub ? "56" : "47"} width="68" height="17">
+                <foreignObject x="-35" y={hasSub ? "62" : "52"} width="70" height="18">
                   <div className={`status-pill-wrap ${badgeClass}`}>
                     <span>{statusLabel}</span>
                   </div>

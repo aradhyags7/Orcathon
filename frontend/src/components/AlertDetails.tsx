@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { Alert } from '../types/api'
-import { Bell, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Bell, ChevronLeft, ChevronRight, ShieldCheck, ShieldAlert } from 'lucide-react'
 
 interface AlertDetailsProps {
   alerts: Alert[]
@@ -8,6 +8,38 @@ interface AlertDetailsProps {
   stepTimestamps?: Record<number, string>
   isCompleted?: boolean
 }
+
+interface DecoyStatusItem {
+  id: string
+  name: string
+  ip: string
+  detail: string
+  trippedStep: number
+}
+
+const DECOY_CONFIG: DecoyStatusItem[] = [
+  {
+    id: 'payroll',
+    name: 'Payroll Records',
+    ip: '10.0.0.30',
+    detail: 'Fake .xlsx canary trap',
+    trippedStep: 3,
+  },
+  {
+    id: 'credentials',
+    name: 'Admin Credentials',
+    ip: '10.0.0.40',
+    detail: 'Planted root credential decoy',
+    trippedStep: 4,
+  },
+  {
+    id: 'server',
+    name: 'Decoy Server',
+    ip: '10.0.0.50',
+    detail: 'Isolated honeypot endpoint',
+    trippedStep: 5,
+  },
+]
 
 export const AlertDetails: React.FC<AlertDetailsProps> = ({
   alerts = [],
@@ -24,7 +56,18 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
     }
   }, [alerts.length])
 
-  // If before first decoy reached (step < 3), render clean awaiting state since Canaries are in the dedicated box
+  const total = alerts.length
+  const currentAlert = alerts[currentIndex] || alerts[0]
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : total - 1))
+  }
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev < total - 1 ? prev + 1 : 0))
+  }
+
+  // Standby View when 0 alerts have triggered yet (before step 3)
   if (alerts.length === 0 || currentStep < 3) {
     return (
       <div className="panel-card alert-details-card">
@@ -36,34 +79,46 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
           <span className="panel-meta-tag">0 Active Alerts</span>
         </div>
 
-        <div className="alert-empty-placeholder">
-          <div className="alert-empty-icon-wrap">
-            <Bell size={24} className="alert-empty-bell" />
+        {/* Compact Standby Decoy Status Section (Section 9) */}
+        <div className="alert-standby-decoy-container">
+          <div className="standby-banner">
+            <ShieldCheck size={16} className="standby-shield" />
+            <div className="standby-text">
+              <span className="standby-title">3 Decoy Tripwires Armed</span>
+              <span className="standby-sub">Subnet 10.0.0.0/24 • Zero Intruder Contact</span>
+            </div>
           </div>
-          <h3 className="alert-empty-title">No Security Alerts Triggered</h3>
-          <p className="alert-empty-desc">
-            All decoy tripwires are armed across the subnet. As soon as an intruder interacts with a monitored canary asset, high-severity forensic alerts and mitigations will appear here.
+
+          <div className="decoy-status-list">
+            {DECOY_CONFIG.map((decoy) => {
+              const isTriggered = currentStep >= decoy.trippedStep
+              return (
+                <div key={decoy.id} className={`decoy-status-row ${isTriggered ? 'decoy-row-triggered' : ''}`}>
+                  <div className="decoy-info-col">
+                    <div className="decoy-name-line">
+                      <span className="decoy-item-name">{decoy.name}</span>
+                      <span className="decoy-item-ip">{decoy.ip}</span>
+                    </div>
+                    <span className="decoy-item-detail">{decoy.detail}</span>
+                  </div>
+                  <span className={`decoy-state-badge ${isTriggered ? 'badge-triggered' : 'badge-monitoring'}`}>
+                    <span className="badge-dot"></span>
+                    {isTriggered ? 'Triggered' : 'Monitoring'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+
+          <p className="alert-empty-hint">
+            Awaiting canary interaction. High-severity alerts and response playbooks will appear here automatically.
           </p>
-          <div className="alert-empty-footer-pill">
-            <span className="empty-dot-green"></span>
-            <span>Awaiting Canary Tripwire Interaction</span>
-          </div>
         </div>
       </div>
     )
   }
 
-  const currentAlert = alerts[currentIndex] || alerts[0]
-  const total = alerts.length
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : total - 1))
-  }
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev < total - 1 ? prev + 1 : 0))
-  }
-
+  // Active Alert Inspector View (Section 6 & 9)
   return (
     <div className="panel-card alert-details-card">
       {/* Header with Title and Pagination Controls */}
@@ -164,6 +219,27 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
               <li>Isolate affected host and review access logs</li>
             )}
           </ul>
+        </div>
+
+        {/* Compact Monitored Decoy Tripwires Status Strip (Section 9) */}
+        <div className="compact-decoys-footer">
+          <span className="compact-decoys-title">Monitored Decoy Tripwires</span>
+          <div className="compact-decoys-pills">
+            {DECOY_CONFIG.map((d) => {
+              const isTriggered = currentStep >= d.trippedStep
+              return (
+                <div key={d.id} className={`decoy-pill-item ${isTriggered ? 'pill-tripped' : 'pill-active'}`}>
+                  {isTriggered ? (
+                    <ShieldAlert size={11} className="decoy-pill-icon alert-icon" />
+                  ) : (
+                    <ShieldCheck size={11} className="decoy-pill-icon safe-icon" />
+                  )}
+                  <span className="decoy-pill-name">{d.name} ({d.ip}):</span>
+                  <span className="decoy-pill-status">{isTriggered ? 'Triggered' : 'Monitoring'}</span>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>
