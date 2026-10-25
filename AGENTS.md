@@ -3,8 +3,8 @@
 ## Critical Constraints
 - **NEVER push (`git push`) to remote repository without explicit confirmation and informing the user first.**
 - **Branch Discipline**: From now on, **never push directly to `main`**. All work must be committed and pushed to dedicated feature branches:
-  - Aradhya (Backend): `backend/aradhya`
-  - Akash (Frontend): `frontend/akash`
+  - Backend: `backend`
+  - Frontend (Akash): `frontend/akash` (or `frontend`)
 - This project is developed for a **hackathon** (Orcathon). Focus on high velocity, polished UI/UX, and robust demo capabilities.
 
 ## Team & Collaboration Strategy
