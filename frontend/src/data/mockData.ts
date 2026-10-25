@@ -227,7 +227,7 @@ export const mockSimulationResult: SimulationResult = {
       recommended_actions: [
         "Investigate source IP",
         "Check for similar activity",
-        "Isolate affected systems if needed",
+        "[Simulated containment] Isolate affected systems if needed",
       ],
     },
     {
@@ -253,7 +253,7 @@ export const mockSimulationResult: SimulationResult = {
       ],
       recommended_actions: [
         "Revoke compromised SSH key across cluster",
-        "Isolate web server 10.0.0.5 from internal routing",
+        "[Simulated containment] Isolate web server 10.0.0.5 from internal routing",
         "Initiate credential audit",
       ],
     },
@@ -278,7 +278,7 @@ export const mockSimulationResult: SimulationResult = {
         "Connection kept alive in deception sandbox",
       ],
       recommended_actions: [
-        "Trap connection in endless TCP tarpit",
+        "[Simulated tarpit] Trap connection in endless TCP tarpit",
         "Capture memory telemetry for forensics",
       ],
     },
@@ -299,12 +299,12 @@ export const mockSimulationResult: SimulationResult = {
       status: "open",
       evidence: [
         "TCP SYN packet on PostgreSQL port 5432",
-        "Zero data transferred or authenticated",
-        "Firewall drop rule triggered",
+        "[Simulated] Zero data transferred or authenticated",
+        "[Simulated] Firewall drop rule triggered",
       ],
       recommended_actions: [
         "Verify ingress firewall rules on 10.0.0.10",
-        "Lock down database access to whitelist only",
+        "[Simulated containment] Lock down database access to whitelist only",
       ],
     },
   ],
