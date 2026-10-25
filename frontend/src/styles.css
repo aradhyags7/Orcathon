@@ -474,7 +474,6 @@ body {
 .grid-col-mid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   height: 100%;
   min-height: 0;
   min-width: 0;
@@ -485,6 +484,7 @@ body {
 .grid-col-right {
   display: flex;
   flex-direction: column;
+  gap: 8px;
   height: 100%;
   min-height: 0;
   min-width: 0;
@@ -925,11 +925,12 @@ body {
    Fits all six events in available panel height with prominent readable fonts
    ========================================================================== */
 .incident-timeline-card {
-  flex: 1.15;
+  flex: 1;
+  height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
+  padding: 10px 14px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -1100,7 +1101,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
+  padding: 8px 10px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -1163,27 +1164,34 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
+  justify-content: center;
 }
 
 .canary-endpoints-list {
   list-style: none;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
-  flex: 1;
-  justify-content: space-evenly;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .canary-endpoint-item {
-  padding: 6px 9px;
+  padding: 6px 4px;
   background-color: #FAF8F5;
   border: 1px solid var(--border-card);
-  border-radius: 6px;
+  border-radius: 7px;
   transition: all 0.15s ease;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .canary-endpoint-item.item-tripped {
@@ -1191,28 +1199,60 @@ body {
   border-color: #FCA5A5;
 }
 
-.endpoint-item-top {
+.endpoint-icon-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  background-color: #FEF6E9;
+  color: #D97706;
+  margin-bottom: 2px;
+}
+
+.canary-endpoint-item.item-tripped .endpoint-icon-badge {
+  background-color: #FEE2E2;
+  color: #DC2626;
+}
+
+.endpoint-meta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .endpoint-name {
-  font-size: 0.74rem;
-  font-weight: 600;
+  font-size: 0.67rem;
+  font-weight: 700;
   color: var(--text-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.endpoint-ip {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #6B7280;
+  font-weight: 500;
 }
 
 .endpoint-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 0.60rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  padding: 1.5px 6px;
-  border-radius: 8px;
-  letter-spacing: 0.03em;
+  padding: 1.5px 5px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
+  margin-top: 2px;
 }
 
 .pill-dot {
@@ -1232,35 +1272,16 @@ body {
   color: #DC2626;
 }
 
-.endpoint-item-bottom {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 1px;
-}
-
-.endpoint-ip {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  color: #4B5563;
-  font-weight: 500;
-}
-
-.endpoint-desc {
-  font-size: 0.65rem;
-  color: var(--text-light);
-}
-
 /* ==========================================================================
    RIGHT COLUMN: ALERT DETAILS (Section 7)
    Larger readable fonts, clean spacing, no clipping
    ========================================================================== */
 .alert-details-card {
-  height: 100%;
+  flex: 1.35;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 10px 14px;
+  padding: 8px 12px;
   box-sizing: border-box;
   overflow-y: auto;
 }
