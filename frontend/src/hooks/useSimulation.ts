@@ -14,16 +14,16 @@ export function useSimulation() {
   const formatUtcTime = (timestamp: number | Date = Date.now()) => {
     return (
       new Date(timestamp).toLocaleTimeString('en-US', {
-        timeZone: 'UTC',
+        timeZone: 'Asia/Kolkata',
         hour12: false,
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-      }) + ' UTC'
+      }) + ' IST'
     )
   }
 
-  // Real-time dynamic timestamps generated from current live clock in UTC
+  // Real-time dynamic timestamps generated from current live clock in IST
   const [stepTimestamps, setStepTimestamps] = useState<Record<number, string>>(() => {
     const now = Date.now()
     return {

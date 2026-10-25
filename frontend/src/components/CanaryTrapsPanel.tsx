@@ -18,23 +18,27 @@ export const CanaryTrapsPanel: React.FC<CanaryTrapsPanelProps> = ({
   const [selectedDecoyId, setSelectedDecoyId] = useState<string>('decoy-payroll-file')
 
   const [liveClock, setLiveClock] = useState<string>(() => {
-    return new Date().toLocaleTimeString('en-US', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    })
+    return (
+      new Date().toLocaleTimeString('en-US', {
+        timeZone: 'Asia/Kolkata',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      }) + ' IST'
+    )
   })
 
   useEffect(() => {
     const timer = setInterval(() => {
       setLiveClock(
         new Date().toLocaleTimeString('en-US', {
+          timeZone: 'Asia/Kolkata',
           hour12: false,
           hour: '2-digit',
           minute: '2-digit',
           second: '2-digit',
-        })
+        }) + ' IST'
       )
     }, 1000)
     return () => clearInterval(timer)
@@ -178,7 +182,7 @@ export const CanaryTrapsPanel: React.FC<CanaryTrapsPanelProps> = ({
                 {isAnyTripped ? 'Intruder Contact Detected' : 'Perimeter Armed • Zero Contact'}
               </span>
             </div>
-            <span className="canary-meta-time">{displayTime}</span>
+            <span className="canary-meta-time">{displayTime.includes('IST') ? displayTime : `${displayTime} IST`}</span>
           </div>
 
           {/* Subnet Meta Line */}

@@ -17,10 +17,10 @@ export const Header: React.FC<HeaderProps> = ({
   onReset,
   onExportCsv,
 }) => {
-  // Live ticking clock for header telemetry
+  // Live ticking clock for header telemetry in IST
   const [liveClock, setLiveClock] = useState<string>(() => {
     return new Date().toLocaleTimeString('en-US', {
-      timeZone: 'UTC',
+      timeZone: 'Asia/Kolkata',
       hour12: true,
       hour: '2-digit',
       minute: '2-digit',
@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
     const timer = setInterval(() => {
       setLiveClock(
         new Date().toLocaleTimeString('en-US', {
-          timeZone: 'UTC',
+          timeZone: 'Asia/Kolkata',
           hour12: true,
           hour: '2-digit',
           minute: '2-digit',
@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    timeZone: 'UTC',
+    timeZone: 'Asia/Kolkata',
   })
 
   return (
@@ -75,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="header-telemetry-text">
-          <span className="telemetry-time">{todayStr} {liveClock} (UTC)</span>
+          <span className="telemetry-time">{todayStr} {liveClock} (IST)</span>
           <span className="telemetry-id">ID: {simulationId}</span>
         </div>
       </div>

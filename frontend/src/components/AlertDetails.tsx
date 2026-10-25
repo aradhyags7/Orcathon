@@ -133,7 +133,7 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
           <h3 className="alert-main-title">{currentAlert.title}</h3>
         </div>
         <span className="alert-meta-time">
-          {currentAlert.created_at.includes('UTC') ? currentAlert.created_at : `${currentAlert.created_at} UTC`}
+          {currentAlert.created_at.includes('IST') ? currentAlert.created_at : `${currentAlert.created_at} IST`}
         </span>
       </div>
 
