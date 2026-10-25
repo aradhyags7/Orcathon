@@ -7,7 +7,9 @@ Team: **Aradhya** (Backend, Detection Engine & Adaption) & **Akash** (Frontend, 
 
 ## Overview
 
-**DeceptiTrace** is a cyber-deception and attack-path reconstruction platform. It deploys high-fidelity decoy assets (canary tokens, decoy payroll archives, honey credentials) across simulated network topology. When an attacker engages with any decoy asset, DeceptiTrace captures telemetry, triggers deterministic high-priority alerts, and reconstructs the end-to-end multi-hop intrusion timeline on an interactive telemetry graph.
+**DeceptiTrace** is a cyber-deception and attack-path reconstruction platform. It deploys high-fidelity decoy assets (canary tokens, decoy payroll archives, honey credentials) across simulated network topology. When an attacker engages with any decoy asset, DeceptiTrace captures telemetry, triggers high-priority alerts, and reconstructs the end-to-end multi-hop intrusion timeline on an interactive telemetry graph.
+
+> **Detection Fidelity Note**: Any interaction with a decoy is treated as high-confidence in this simulation (near-zero false positives by design for dedicated canary assets).
 
 ---
 

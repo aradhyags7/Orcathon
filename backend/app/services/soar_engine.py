@@ -15,7 +15,7 @@ PRECONFIGURED_PLAYBOOKS: list[Playbook] = [
     Playbook(
         id="playbook-rapid-containment",
         name="Rapid Endpoint Quarantine & Credential Revocation",
-        description="Autonomous containment executed upon canary tripwire breach. Isolates the breach source host at network layer and revokes honey-tokens.",
+        description="[Simulated] Autonomous containment executed upon canary tripwire breach. Isolates the breach source host at network layer and revokes honey-tokens.",
         trigger_severity="high",
         target_scenario="all",
         actions=[
@@ -23,26 +23,26 @@ PRECONFIGURED_PLAYBOOKS: list[Playbook] = [
                 action_id="act-quarantine-01",
                 name="Network Isolation",
                 action_type="isolate_source_host",
-                description="Apply dynamic firewall rule to quarantine breached asset while maintaining out-of-band telemetry.",
+                description="[Simulated] Apply dynamic firewall rule to quarantine breached asset while maintaining out-of-band telemetry.",
             ),
             PlaybookAction(
                 action_id="act-revoke-02",
                 name="Honey-Token Invalidation",
                 action_type="revoke_credentials",
-                description="Immediately invalidate compromised credentials in identity provider and rotate service keys.",
+                description="[Simulated] Immediately invalidate compromised credentials in identity provider and rotate service keys.",
             ),
             PlaybookAction(
                 action_id="act-kill-03",
                 name="Session Termination",
                 action_type="kill_connections",
-                description="Sever active SMB/SSH/TCP sessions from adversary source IP.",
+                description="[Simulated] Sever active SMB/SSH/TCP sessions from adversary source IP.",
             ),
         ],
     ),
     Playbook(
         id="playbook-active-deception-tarpit",
         name="Dynamic Sandbox Tarpit & Deception Reroute",
-        description="Silently captures adversary probing by engaging an interactive decoy tarpit sandbox without alerting the intruder.",
+        description="[Simulated] Silently captures adversary probing by engaging an interactive decoy tarpit sandbox without alerting the intruder.",
         trigger_severity="medium",
         target_scenario="all",
         actions=[
@@ -50,26 +50,26 @@ PRECONFIGURED_PLAYBOOKS: list[Playbook] = [
                 action_id="act-tarpit-01",
                 name="Deploy Tarpit Proxy",
                 action_type="deploy_tarpit_proxy",
-                description="Slow connection throughput to 10 bytes/sec to exhaust attacker automated scanning tools.",
+                description="[Simulated] Slow connection throughput to 10 bytes/sec to exhaust attacker automated scanning tools.",
             ),
             PlaybookAction(
                 action_id="act-reroute-02",
                 name="Reroute to Decoy Sandbox",
                 action_type="reroute_traffic",
-                description="Divert adversary SMB/DB queries directly into isolated decoy honeypot instance.",
+                description="[Simulated] Divert adversary SMB/DB queries directly into isolated decoy honeypot instance.",
             ),
             PlaybookAction(
                 action_id="act-pcap-03",
                 name="Full Forensic PCAP Capture",
                 action_type="enable_forensic_pcap",
-                description="Stream full packet capture into immutable forensic bucket for post-incident legal evidence.",
+                description="[Simulated] Stream full packet capture into immutable forensic bucket for post-incident legal evidence.",
             ),
         ],
     ),
     Playbook(
         id="playbook-threat-intel-export",
         name="Automated STIX 2.1 Threat Intel & Adaption AI Sync",
-        description="Compiles observed incident forensics into standard STIX 2.1 threat intelligence and curates training telemetry for Adaption Labs AI.",
+        description="[Simulated] Compiles observed incident forensics into standard STIX 2.1 threat intelligence and curates training telemetry for Adaption Labs AI.",
         trigger_severity="low",
         target_scenario="all",
         actions=[
@@ -77,19 +77,19 @@ PRECONFIGURED_PLAYBOOKS: list[Playbook] = [
                 action_id="act-stix-01",
                 name="Generate STIX 2.1 Bundle",
                 action_type="generate_stix_bundle",
-                description="Export structured threat intelligence bundle with indicators, attack patterns, and relationships.",
+                description="[Simulated] Export structured threat intelligence bundle with indicators, attack patterns, and relationships.",
             ),
             PlaybookAction(
                 action_id="act-blacklist-02",
                 name="Blacklist Extracted IOCs",
                 action_type="blacklist_iocs",
-                description="Push adversary IP and file hashes to perimeter edge firewalls and DNS sinkholes.",
+                description="[Simulated] Push adversary IP and file hashes to perimeter edge firewalls and DNS sinkholes.",
             ),
             PlaybookAction(
                 action_id="act-adaption-03",
                 name="Sync Telemetry to Adaption Labs",
                 action_type="sync_adaption_dataset",
-                description="Curate raw incident events into instruction-tuning prompt/completion pairs using official Adaption SDK.",
+                description="[Simulated] Curate raw incident events into instruction-tuning prompt/completion pairs using official Adaption SDK.",
             ),
         ],
     ),
@@ -148,7 +148,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details=f"Host '{target_asset}' quarantined at Layer 2/3 firewall boundaries.",
+                    details=f"[Simulated] Host '{target_asset}' quarantined at Layer 2/3 firewall boundaries.",
                     executed_at=now_iso,
                 ))
 
@@ -157,7 +157,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details="Invalidated honey-token 'aws_admin_svc_key' and expired active Kerberos tickets.",
+                    details="[Simulated] Invalidated honey-token 'aws_admin_svc_key' and expired active Kerberos tickets.",
                     executed_at=now_iso,
                 ))
 
@@ -170,7 +170,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details=f"TCP RST injected for connection '{conn_id}'. Network path severed.",
+                    details=f"[Simulated] TCP RST injected for connection '{conn_id}'. Network path severed.",
                     executed_at=now_iso,
                 ))
 
@@ -179,7 +179,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details="Tarpit proxy engaged; adversary socket throttled to simulate network degradation.",
+                    details="[Simulated] Tarpit proxy engaged; adversary socket throttled to simulate network degradation.",
                     executed_at=now_iso,
                 ))
 
@@ -189,7 +189,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details="DNS sinkhole redirected adversary lateral SMB probe into decoy sandbox container.",
+                    details="[Simulated] DNS sinkhole redirected adversary lateral SMB probe into decoy sandbox container.",
                     executed_at=now_iso,
                 ))
 
@@ -198,7 +198,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details="Rolling forensic PCAP recorder armed (buffer: 500MB, destination: s3://decepti-pcap/).",
+                    details="[Simulated] Rolling forensic PCAP recorder armed (buffer: 500MB, destination: s3://decepti-pcap/).",
                     executed_at=now_iso,
                 ))
 
@@ -208,7 +208,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details=f"STIX 2.1 Threat Intel bundle generated with {len(bundle['objects'])} cyber observables.",
+                    details=f"[Simulated] STIX 2.1 Threat Intel bundle generated with {len(bundle['objects'])} cyber observables.",
                     executed_at=now_iso,
                 ))
 
@@ -218,7 +218,7 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details=f"Pushed {len(iocs['iocs']['ipv4_addresses'])} IPs and {len(iocs['iocs']['decoy_files'])} decoy hashes to firewall blacklist.",
+                    details=f"[Simulated] Pushed {len(iocs['iocs']['ipv4_addresses'])} IPs and {len(iocs['iocs']['decoy_files'])} decoy hashes to firewall blacklist.",
                     executed_at=now_iso,
                 ))
 
@@ -227,12 +227,12 @@ class SOAREngine:
                     action_id=action.action_id,
                     action_type=action.action_type,
                     status="simulated" if dry_run else "completed",
-                    details="Queued 4 telemetry events for Adaption Labs dataset curation (Quality Index: 0.974).",
+                    details="[Simulated] Queued telemetry events for Adaption Labs dataset curation.",
                     executed_at=now_iso,
                 ))
 
         summary = (
-            f"SOAR Playbook '{playbook.name}' successfully executed against incident {incident_id}. "
+            f"[Simulated] SOAR Playbook '{playbook.name}' successfully executed against incident {incident_id}. "
             f"Quarantined {len(isolated_assets)} asset(s), severed {len(blocked_connections)} connection(s), "
             f"and executed {len(action_logs)} automated containment actions."
         )

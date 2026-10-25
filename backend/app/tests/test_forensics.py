@@ -35,9 +35,9 @@ def test_forensics_lifecycle():
 
     # 4. Test IOCs Extraction
     iocs_res = client.get(f"/api/incidents/{sim_id}/iocs")
-    assert iocs_res.status_code == 200
     iocs_data = iocs_res.json()
-    assert iocs_data["fidelity"] == "100%_deterministic_decoy_tripwire"
+    assert iocs_data["fidelity"] == "high_confidence_decoy_trap"
+    assert iocs_data["false_positive_rate"] == "near_zero_by_design"
     iocs = iocs_data["iocs"]
     assert len(iocs["decoy_files"]) > 0 or len(iocs["honey_credentials"]) > 0
     assert "Executive_Salaries_2026.xlsx" in iocs["decoy_files"]
