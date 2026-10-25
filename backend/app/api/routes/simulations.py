@@ -10,9 +10,15 @@ router = APIRouter(tags=["Simulations & Incidents"])
 def list_scenarios() -> ScenariosResponse:
     return ScenariosResponse(scenarios=simulation_engine.get_scenarios())
 
-@router.post("/simulations/run", response_model=SimulationResult)
+@router.post("/simulations/run", response_model=SimulationResult, responses={400: {"model": ErrorResponse}})
 def run_simulation(request: SimulationRunRequest = SimulationRunRequest()) -> SimulationResult:
-    return simulation_engine.run_scenario(request.scenario_id)
+    try:
+        return simulation_engine.run_scenario(request.scenario_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": {"code": "UNKNOWN_SCENARIO", "message": f"Scenario '{request.scenario_id}' is not recognized."}},
+        )
 
 @router.get("/simulations/{simulation_id}", response_model=SimulationResult, responses={404: {"model": ErrorResponse}})
 def get_simulation(simulation_id: str):

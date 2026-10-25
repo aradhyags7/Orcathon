@@ -38,6 +38,10 @@ class SimulationEngine:
         return AVAILABLE_SCENARIOS
 
     def run_scenario(self, scenario_id: str = "credential_lateral_movement") -> SimulationResult:
+        valid_ids = {s.id for s in AVAILABLE_SCENARIOS}
+        if scenario_id not in valid_ids:
+            raise ValueError(f"Unknown scenario ID '{scenario_id}'. Valid scenarios are: {sorted(valid_ids)}")
+
         sim_id = f"sim-{uuid4().hex[:6]}"
         now = datetime.now(timezone.utc)
 
@@ -132,9 +136,7 @@ class SimulationEngine:
                     "mitre": MitreAttack(technique_id="T1078.004", technique_name="Cloud Accounts", tactic="Defense Evasion"),
                 },
             ]
-        else:
-            # Default: credential_lateral_movement
-            scenario_id = "credential_lateral_movement"
+        elif scenario_id == "credential_lateral_movement":
             raw_steps = [
                 {
                     "offset": 0,

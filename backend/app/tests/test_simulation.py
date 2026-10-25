@@ -50,3 +50,13 @@ def test_run_simulation_and_reset():
     alerts_res = client.get(f"/api/alerts?simulation_id={sim_id}")
     assert alerts_res.status_code == 200
     assert len(alerts_res.json()["alerts"]) >= 2
+
+
+def test_unknown_scenario_returns_400():
+    res = client.post("/api/simulations/run", json={"scenario_id": "non_existent_exploit_99"})
+    assert res.status_code == 400
+    data = res.json()
+    assert "error" in data
+    assert data["error"]["code"] == "UNKNOWN_SCENARIO"
+    assert "non_existent_exploit_99" in data["error"]["message"]
+
