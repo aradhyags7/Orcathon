@@ -1,6 +1,7 @@
 import type { Asset, GraphData, SecurityEvent, Alert, SimulationResult } from '../types/api'
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+const rawUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').trim().replace(/\/+$/, '')
+const BASE_URL = rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${BASE_URL}${endpoint}`

@@ -14,10 +14,13 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Enable CORS for frontend Vite development server
+import os
+
+# Enable CORS for frontend development server and Render-hosted instances
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.cors_origins_list,
+    allow_origin_regex=r"^https?://.*\.onrender\.com$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -53,3 +56,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             }
         },
     )
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=False)
