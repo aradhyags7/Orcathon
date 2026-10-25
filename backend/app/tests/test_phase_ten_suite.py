@@ -138,6 +138,17 @@ def test_7_adaption_integration():
     assert curate_data["records_processed"] >= 4
     assert curate_data["data_quality_index"] > 0.9
 
+    # Test status endpoint
+    status_res = client.get("/api/adaption/status")
+    assert status_res.status_code == 200
+    assert status_res.json()["sdk_available"] is True
+
+    # Test export dataset endpoint
+    export_res = client.get("/api/adaption/export-dataset")
+    assert export_res.status_code == 200
+    assert "prompt" in export_res.text
+    assert "MALICIOUS_DECOY_INTERACTION" in export_res.text
+
 # Test 8: Multiple Scenarios & MITRE ATT&CK Tags
 def test_8_multiple_scenarios_and_mitre():
     # List scenarios

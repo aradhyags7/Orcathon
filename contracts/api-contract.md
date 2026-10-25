@@ -21,7 +21,9 @@
 | `POST` | `/api/alerts/{id}/contain` | SOAR automated host containment & credential revocation |
 | `GET` | `/api/simulations/{id}` | Retrieve completed simulation by ID |
 | `POST` | `/api/simulations/{id}/adaption-analysis` | Threat intelligence enrichment via Adaption Labs |
+| `GET` | `/api/adaption/status` | Adaption Labs SDK integration status & pipeline metrics |
 | `POST` | `/api/adaption/curate-dataset` | Curate telemetry into model-ready AI fine-tuning dataset |
+| `GET` | `/api/adaption/export-dataset` | Download curated .jsonl instruction dataset for model SFT |
 | `POST` | `/api/reset` | Clear simulation state while retaining base assets |
 
 ---

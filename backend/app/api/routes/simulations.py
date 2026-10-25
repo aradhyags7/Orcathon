@@ -48,9 +48,20 @@ async def run_adaption_analysis(simulation_id: str):
         "adaption_integration": analysis,
     }
 
+from fastapi.responses import PlainTextResponse
+
+@router.get("/adaption/status")
+def get_adaption_status():
+    return adaption_client.get_status()
+
 @router.post("/adaption/curate-dataset")
 async def curate_dataset():
     events = [e.model_dump() for e in store.get_events()]
     result = await adaption_client.curate_telemetry_dataset(events)
     return result
+
+@router.get("/adaption/export-dataset", response_class=PlainTextResponse)
+def export_dataset():
+    events = [e.model_dump() for e in store.get_events()]
+    return adaption_client.generate_jsonl_export(events)
 
