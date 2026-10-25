@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Play, RotateCcw, Download } from 'lucide-react'
+import { Play, RotateCcw, Download, Shield } from 'lucide-react'
 
 interface HeaderProps {
   backendAvailable: boolean
@@ -52,18 +52,36 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="top-header-bar">
-      <div className="header-meta-group">
+      {/* Brand & Page Title on Top Left */}
+      <div className="header-left-brand-group">
+        <div className="header-brand-wrap">
+          <div className="header-brand-icon">
+            <Shield size={16} className="brand-shield" />
+          </div>
+          <div className="header-brand-text">
+            <div className="header-brand-title-line">
+              <span className="header-brand-title">DeceptiTrace</span>
+              <span className="header-track-tag">Track 03 • ORCATHON</span>
+            </div>
+            <span className="header-brand-tagline">Cyber Deception • Detect • Trace • Investigate</span>
+          </div>
+        </div>
+
+        <div className="header-v-divider"></div>
+
+        {/* Simulation Environment & Telemetry Status */}
         <div className="env-pill">
           <span className="env-dot"></span>
-          <span className="env-text">Simulation Environment</span>
+          <span className="env-text">Environment Active</span>
         </div>
 
         <div className="header-telemetry-text">
           <span className="telemetry-time">{todayStr} {liveClock} (UTC)</span>
-          <span className="telemetry-id">Simulation ID: {simulationId}</span>
+          <span className="telemetry-id">ID: {simulationId}</span>
         </div>
       </div>
 
+      {/* Action Controls on Top Right */}
       <div className="header-actions">
         {/* Download CSV Report Button */}
         <button
