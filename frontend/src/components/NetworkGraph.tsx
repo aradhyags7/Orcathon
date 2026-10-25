@@ -1,188 +1,451 @@
-import React, { useMemo } from 'react'
-import type { GraphData, Asset } from '../types/api'
-import { Laptop, Server, FileWarning, KeyRound } from 'lucide-react'
+import React from 'react'
+import type { GraphData } from '../types/api'
+import {
+  Network,
+  Server,
+  Monitor,
+  FileSpreadsheet,
+  Key,
+  Database,
+  UserX,
+} from 'lucide-react'
 
 interface NetworkGraphProps {
   graph: GraphData
   activePath?: string[]
+  currentStep?: number
 }
 
-interface NodeCoords {
+interface NodePosition {
   x: number
   y: number
+  name: string
+  ip: string
+  kind: 'external' | 'server' | 'endpoint' | 'decoy_file' | 'honey_credential'
+  isDecoy: boolean
 }
 
-// Preset visual coordinates for stable, aesthetic layout
-const NODE_COORDINATES: Record<string, NodeCoords> = {
-  'employee-pc-01': { x: 120, y: 190 },
-  'file-server-01': { x: 380, y: 130 },
-  'finance-server-01': { x: 640, y: 290 },
-  'decoy-payroll-file': { x: 380, y: 310 },
-  'honey-credential-01': { x: 640, y: 130 },
+const TOPOLOGY_NODES: Record<string, NodePosition> = {
+  'employee-pc-01': {
+    x: 315,
+    y: 105,
+    name: 'Employee PC',
+    ip: '10.0.0.12',
+    kind: 'endpoint',
+    isDecoy: false,
+  },
+  'file-server-01': {
+    x: 450,
+    y: 105,
+    name: 'File Server',
+    ip: '10.0.0.8',
+    kind: 'server',
+    isDecoy: false,
+  },
+  'external-actor': {
+    x: 200,
+    y: 215,
+    name: 'External Actor',
+    ip: '203.0.113.44',
+    kind: 'external',
+    isDecoy: false,
+  },
+  'web-server-01': {
+    x: 315,
+    y: 215,
+    name: 'Web Server',
+    ip: '10.0.0.5',
+    kind: 'server',
+    isDecoy: false,
+  },
+  'decoy-payroll-file': {
+    x: 450,
+    y: 215,
+    name: 'Payroll Records (decoy file)',
+    ip: '10.0.0.30',
+    kind: 'decoy_file',
+    isDecoy: true,
+  },
+  'admin-credentials-decoy': {
+    x: 585,
+    y: 215,
+    name: 'Admin Credentials (decoy)',
+    ip: '10.0.0.40',
+    kind: 'honey_credential',
+    isDecoy: true,
+  },
+  'hr-workstation-01': {
+    x: 415,
+    y: 320,
+    name: 'HR Workstation',
+    ip: '10.0.0.14',
+    kind: 'endpoint',
+    isDecoy: false,
+  },
+  'decoy-server-01': {
+    x: 585,
+    y: 320,
+    name: 'Decoy Server',
+    ip: '10.0.0.50',
+    kind: 'server',
+    isDecoy: true,
+  },
+  'database-server-01': {
+    x: 700,
+    y: 320,
+    name: 'Database Server',
+    ip: '10.0.0.10',
+    kind: 'server',
+    isDecoy: false,
+  },
 }
 
-export const NetworkGraph: React.FC<NetworkGraphProps> = ({ graph, activePath = [] }) => {
-  const nodeMap = useMemo(() => {
-    const map = new Map<string, Asset>()
-    graph.nodes.forEach((n) => map.set(n.id, n))
-    return map
-  }, [graph.nodes])
-
-  const getNodeIcon = (kind: Asset['kind']) => {
+export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 0 }) => {
+  const getNodeIcon = (kind: NodePosition['kind']) => {
     switch (kind) {
+      case 'external':
+        return UserX
       case 'endpoint':
-        return Laptop
+        return Monitor
+      case 'decoy_file':
+        return FileSpreadsheet
+      case 'honey_credential':
+        return Key
       case 'server':
         return Server
-      case 'decoy_file':
-        return FileWarning
-      case 'honey_credential':
-        return KeyRound
       default:
-        return Server
+        return Database
     }
   }
 
+  // Node statuses determined dynamically by real-time attack step:
+  // Once a node is reached, it TURNS RED/COMPROMISED/ALERTED and REMAINS RED even as attack progresses!
+  const isActorActive = currentStep >= 1
+  const isWebServerCompromised = currentStep >= 2
+  const isPayrollDecoyAlerted = currentStep >= 3
+  const isHoneyCredsAlerted = currentStep >= 4
+  const isDecoyServerAlerted = currentStep >= 5
+  const isDatabaseCompromised = currentStep >= 6
+
   return (
-    <div className="panel-card network-graph-panel">
-      <div className="panel-header">
-        <div>
-          <h2 className="panel-title">Network Deception Topology</h2>
-          <p className="panel-subtitle">Simulated enterprise perimeter, internal shares & active decoy traps</p>
+    <div className="panel-card network-sim-card">
+      {/* Header and Legend */}
+      <div className="panel-header-row">
+        <div className="panel-title-group">
+          <Network size={18} className="panel-title-icon" />
+          <h2 className="panel-title-text">Network Simulation</h2>
         </div>
-        <div className="graph-badges">
-          <span className="badge badge-decoy">2 Decoys Active</span>
-          <span className="badge badge-sensors">Live Tripwires</span>
+
+        <div className="topology-legend">
+          <div className="legend-entry">
+            <span className="dot dot-green"></span>
+            <span>Real Asset</span>
+          </div>
+          <div className="legend-entry">
+            <span className="dot dot-amber"></span>
+            <span>Decoy Asset</span>
+          </div>
+          <div className="legend-entry">
+            <span className="dot dot-red"></span>
+            <span>Intruder (External)</span>
+          </div>
+          <div className="legend-entry">
+            <span className="line-legend line-normal"></span>
+            <span>Normal Connection</span>
+          </div>
+          <div className="legend-entry">
+            <span className="line-legend line-attack"></span>
+            <span>Attack Path (Observed)</span>
+          </div>
+          <div className="legend-entry">
+            <span className="line-legend line-inferred"></span>
+            <span>Inferred Movement</span>
+          </div>
         </div>
       </div>
 
-      <div className="graph-container">
-        <svg viewBox="0 0 780 400" className="topology-svg" role="img" aria-label="Network Deception Topology Graph">
+      {/* SVG Canvas */}
+      <div className="topology-canvas-container">
+        <svg
+          viewBox="0 0 760 380"
+          className="topology-svg"
+          role="img"
+          aria-label="DeceptiTrace Interactive Topology Canvas"
+        >
           <defs>
-            {/* Standard edge marker */}
-            <marker id="arrowNormal" markerWidth="8" markerHeight="8" refX="28" refY="4" orient="auto">
-              <polygon points="0 0, 8 4, 0 8" fill="#475569" />
+            {/* Red Arrow Marker for Observed Attack Path */}
+            <marker
+              id="arrow-attack"
+              markerWidth="8"
+              markerHeight="8"
+              refX="18"
+              refY="4"
+              orient="auto"
+            >
+              <polygon points="0 1, 8 4, 0 7" fill="#dc2626" />
             </marker>
-            {/* Traversed edge marker */}
-            <marker id="arrowTraversed" markerWidth="10" markerHeight="10" refX="30" refY="5" orient="auto">
-              <polygon points="0 0, 10 5, 0 10" fill="#38bdf8" />
-            </marker>
-            {/* Suspicious/Decoy alert marker */}
-            <marker id="arrowAlert" markerWidth="10" markerHeight="10" refX="30" refY="5" orient="auto">
-              <polygon points="0 0, 10 5, 0 10" fill="#f43f5e" />
+
+            {/* Gray Arrow Marker for Normal Connections */}
+            <marker
+              id="arrow-normal"
+              markerWidth="7"
+              markerHeight="7"
+              refX="16"
+              refY="3.5"
+              orient="auto"
+            >
+              <polygon points="0 1, 6 3.5, 0 6" fill="#9ca3af" />
             </marker>
           </defs>
 
-          {/* Render edges */}
-          {graph.edges.map((edge, idx) => {
-            const src = NODE_COORDINATES[edge.source] || { x: 100, y: 100 }
-            const tgt = NODE_COORDINATES[edge.target] || { x: 200, y: 200 }
-            const isAlert = edge.status === 'suspicious'
-            const isTraversed = edge.status === 'traversed'
-            const marker = isAlert ? 'url(#arrowAlert)' : isTraversed ? 'url(#arrowTraversed)' : 'url(#arrowNormal)'
-            const strokeClass = isAlert ? 'edge-line edge-alert' : isTraversed ? 'edge-line edge-traversed' : 'edge-line'
+          {/* 1. Normal Connections (Always Visible) */}
+          <line
+            x1={TOPOLOGY_NODES['employee-pc-01'].x + 22}
+            y1={TOPOLOGY_NODES['employee-pc-01'].y}
+            x2={TOPOLOGY_NODES['file-server-01'].x - 22}
+            y2={TOPOLOGY_NODES['file-server-01'].y}
+            className="conn-normal"
+            markerEnd="url(#arrow-normal)"
+            markerStart="url(#arrow-normal)"
+          />
 
-            return (
-              <g key={`edge-${idx}`}>
-                <line
-                  x1={src.x}
-                  y1={src.y}
-                  x2={tgt.x}
-                  y2={tgt.y}
-                  className={strokeClass}
-                  markerEnd={marker}
-                />
-                {isAlert && (
-                  <circle className="edge-pulse-dot" r="4" fill="#f43f5e">
-                    <animateMotion
-                      path={`M${src.x},${src.y} L${tgt.x},${tgt.y}`}
-                      dur="1.8s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                )}
-              </g>
-            )
-          })}
+          <line
+            x1={TOPOLOGY_NODES['employee-pc-01'].x}
+            y1={TOPOLOGY_NODES['employee-pc-01'].y + 22}
+            x2={TOPOLOGY_NODES['web-server-01'].x}
+            y2={TOPOLOGY_NODES['web-server-01'].y - 22}
+            className="conn-normal"
+            markerEnd="url(#arrow-normal)"
+            markerStart="url(#arrow-normal)"
+          />
 
-          {/* Render nodes */}
-          {graph.nodes.map((node) => {
-            const coords = NODE_COORDINATES[node.id] || { x: 200, y: 200 }
-            const isDecoy = node.is_decoy
-            const isAlert = node.status === 'alert'
-            const isSuspicious = node.status === 'suspicious'
-            const isHighlighted = activePath.includes(node.id)
+          <line
+            x1={TOPOLOGY_NODES['web-server-01'].x + 18}
+            y1={TOPOLOGY_NODES['web-server-01'].y + 18}
+            x2={TOPOLOGY_NODES['hr-workstation-01'].x - 18}
+            y2={TOPOLOGY_NODES['hr-workstation-01'].y - 18}
+            className="conn-normal"
+            markerEnd="url(#arrow-normal)"
+          />
 
-            const boxClass = isAlert
-              ? 'node-card node-alert'
-              : isDecoy
-              ? 'node-card node-decoy'
-              : isSuspicious || isHighlighted
-              ? 'node-card node-suspicious'
-              : 'node-card node-healthy'
+          {/* 2. Real-Time Observed Attack Path Segments with Animated Traveling Laser Beam */}
+          {/* Segment 1: External Actor -> Web Server (Step >= 1) */}
+          {currentStep >= 1 && (
+            <g className="attack-path-segment">
+              <line
+                x1={TOPOLOGY_NODES['external-actor'].x + 22}
+                y1={TOPOLOGY_NODES['external-actor'].y}
+                x2={TOPOLOGY_NODES['web-server-01'].x - 22}
+                y2={TOPOLOGY_NODES['web-server-01'].y}
+                className="conn-attack-dashed"
+                markerEnd="url(#arrow-attack)"
+              />
+              {currentStep === 1 && (
+                <circle r="4" fill="#DC2626" className="traveling-laser-pulse">
+                  <animateMotion
+                    path={`M${TOPOLOGY_NODES['external-actor'].x + 22},${TOPOLOGY_NODES['external-actor'].y} L${TOPOLOGY_NODES['web-server-01'].x - 22},${TOPOLOGY_NODES['web-server-01'].y}`}
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              )}
+            </g>
+          )}
 
+          {/* Segment 2: Web Server -> Payroll Records Decoy (Step >= 2) */}
+          {currentStep >= 2 && (
+            <g className="attack-path-segment">
+              <line
+                x1={TOPOLOGY_NODES['web-server-01'].x + 22}
+                y1={TOPOLOGY_NODES['web-server-01'].y}
+                x2={TOPOLOGY_NODES['decoy-payroll-file'].x - 22}
+                y2={TOPOLOGY_NODES['decoy-payroll-file'].y}
+                className="conn-attack-dashed"
+                markerEnd="url(#arrow-attack)"
+              />
+              {currentStep === 2 && (
+                <circle r="4" fill="#DC2626" className="traveling-laser-pulse">
+                  <animateMotion
+                    path={`M${TOPOLOGY_NODES['web-server-01'].x + 22},${TOPOLOGY_NODES['web-server-01'].y} L${TOPOLOGY_NODES['decoy-payroll-file'].x - 22},${TOPOLOGY_NODES['decoy-payroll-file'].y}`}
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              )}
+            </g>
+          )}
+
+          {/* Segment 3: Payroll Records Decoy -> Admin Credentials Decoy (Step >= 3) */}
+          {currentStep >= 3 && (
+            <g className="attack-path-segment">
+              <line
+                x1={TOPOLOGY_NODES['decoy-payroll-file'].x + 22}
+                y1={TOPOLOGY_NODES['decoy-payroll-file'].y}
+                x2={TOPOLOGY_NODES['admin-credentials-decoy'].x - 22}
+                y2={TOPOLOGY_NODES['admin-credentials-decoy'].y}
+                className="conn-attack-dashed"
+                markerEnd="url(#arrow-attack)"
+              />
+              {currentStep === 3 && (
+                <circle r="4" fill="#DC2626" className="traveling-laser-pulse">
+                  <animateMotion
+                    path={`M${TOPOLOGY_NODES['decoy-payroll-file'].x + 22},${TOPOLOGY_NODES['decoy-payroll-file'].y} L${TOPOLOGY_NODES['admin-credentials-decoy'].x - 22},${TOPOLOGY_NODES['admin-credentials-decoy'].y}`}
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              )}
+            </g>
+          )}
+
+          {/* Segment 4: Admin Credentials -> Decoy Server (Step >= 4, Vertical Down) */}
+          {currentStep >= 4 && (
+            <g className="attack-path-segment">
+              <line
+                x1={TOPOLOGY_NODES['admin-credentials-decoy'].x}
+                y1={TOPOLOGY_NODES['admin-credentials-decoy'].y + 22}
+                x2={TOPOLOGY_NODES['decoy-server-01'].x}
+                y2={TOPOLOGY_NODES['decoy-server-01'].y - 22}
+                className="conn-attack-dashed"
+                markerEnd="url(#arrow-attack)"
+              />
+              {currentStep === 4 && (
+                <circle r="4" fill="#DC2626" className="traveling-laser-pulse">
+                  <animateMotion
+                    path={`M${TOPOLOGY_NODES['admin-credentials-decoy'].x},${TOPOLOGY_NODES['admin-credentials-decoy'].y + 22} L${TOPOLOGY_NODES['decoy-server-01'].x},${TOPOLOGY_NODES['decoy-server-01'].y - 22}`}
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              )}
+            </g>
+          )}
+
+          {/* Segment 5: Decoy Server -> Database Server (Step >= 5, Horizontal Right) */}
+          {currentStep >= 5 && (
+            <g className="attack-path-segment">
+              <line
+                x1={TOPOLOGY_NODES['decoy-server-01'].x + 22}
+                y1={TOPOLOGY_NODES['decoy-server-01'].y}
+                x2={TOPOLOGY_NODES['database-server-01'].x - 22}
+                y2={TOPOLOGY_NODES['database-server-01'].y}
+                className="conn-attack-dashed"
+                markerEnd="url(#arrow-attack)"
+              />
+              {currentStep === 5 && (
+                <circle r="4" fill="#DC2626" className="traveling-laser-pulse">
+                  <animateMotion
+                    path={`M${TOPOLOGY_NODES['decoy-server-01'].x + 22},${TOPOLOGY_NODES['decoy-server-01'].y} L${TOPOLOGY_NODES['database-server-01'].x - 22},${TOPOLOGY_NODES['database-server-01'].y}`}
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              )}
+            </g>
+          )}
+
+          {/* 3. Render Nodes with Live Real-Time State */}
+          {Object.entries(TOPOLOGY_NODES).map(([id, node]) => {
             const Icon = getNodeIcon(node.kind)
+            const isActor = node.kind === 'external'
+
+            // Dynamic status logic
+            let isCompromised = false
+            let isAlerted = false
+            let statusLabel = 'Healthy'
+
+            if (id === 'external-actor') {
+              statusLabel = 'External'
+            } else if (id === 'web-server-01') {
+              isCompromised = isWebServerCompromised
+              statusLabel = isWebServerCompromised ? 'Compromised' : 'Healthy'
+            } else if (id === 'decoy-payroll-file') {
+              isAlerted = isPayrollDecoyAlerted
+              statusLabel = 'Decoy'
+            } else if (id === 'admin-credentials-decoy') {
+              isAlerted = isHoneyCredsAlerted
+              statusLabel = 'Decoy'
+            } else if (id === 'decoy-server-01') {
+              isAlerted = isDecoyServerAlerted
+              statusLabel = 'Decoy'
+            } else if (id === 'database-server-01') {
+              isCompromised = isDatabaseCompromised
+              statusLabel = isDatabaseCompromised ? 'Compromised' : 'Healthy'
+            } else {
+              statusLabel = 'Healthy'
+            }
+
+            // Circle style
+            let circleClass = 'node-circle circle-real'
+            if (isActor) {
+              circleClass = 'node-circle circle-actor'
+            } else if (node.isDecoy) {
+              circleClass = isAlerted ? 'node-circle circle-decoy-alerted' : 'node-circle circle-decoy'
+            } else if (isCompromised) {
+              circleClass = 'node-circle circle-real-compromised'
+            }
+
+            // Pill badge style
+            let badgeClass = 'node-pill pill-healthy'
+            if (isActor) {
+              badgeClass = 'node-pill pill-actor'
+            } else if (node.isDecoy) {
+              badgeClass = 'node-pill pill-decoy'
+            } else if (isCompromised) {
+              badgeClass = 'node-pill pill-compromised'
+            }
 
             return (
               <g
-                key={node.id}
-                transform={`translate(${coords.x}, ${coords.y})`}
-                className="node-group"
+                key={id}
+                transform={`translate(${node.x}, ${node.y})`}
+                className={`node-item-group ${isCompromised || isAlerted ? 'node-alerted-bounce' : ''}`}
               >
-                {/* Background Card */}
-                <rect
-                  x="-75"
-                  y="-35"
-                  width="150"
-                  height="70"
-                  rx="10"
-                  className={boxClass}
-                />
-
-                {/* Status beacon dot */}
+                {/* Node Avatar Circle */}
                 <circle
-                  cx="-56"
-                  cy="-18"
-                  r="5"
-                  className={isAlert ? 'beacon-pulse red-pulse' : isDecoy ? 'beacon-decoy' : 'beacon-green'}
+                  cx="0"
+                  cy="0"
+                  r={isActor ? '24' : '20'}
+                  className={circleClass}
                 />
 
-                {/* Node icon label */}
-                <foreignObject x="-70" y="-12" width="140" height="42">
-                  <div className="node-content">
-                    <div className="node-icon-row">
-                      <Icon size={14} className="node-icon" />
-                      <span className="node-name" title={node.name}>{node.name}</span>
-                    </div>
-                    <span className="node-kind-tag">
-                      {isDecoy ? 'TRIPWIRE DECOY' : node.kind.replace('_', ' ').toUpperCase()}
-                    </span>
+                {/* Animated Pulsing Halo when active/alerted */}
+                {(isActorActive && isActor) || isAlerted || isCompromised ? (
+                  <circle cx="0" cy="0" r="28" className="beacon-actor-pulse" />
+                ) : null}
+
+                {/* Inner Icon */}
+                <foreignObject
+                  x={isActor ? -11 : -9}
+                  y={isActor ? -11 : -9}
+                  width={isActor ? 22 : 18}
+                  height={isActor ? 22 : 18}
+                  className="node-icon-foreign"
+                >
+                  <Icon
+                    size={isActor ? 22 : 18}
+                    className={`node-glyph ${isActor ? 'glyph-actor' : node.isDecoy ? 'glyph-decoy' : 'glyph-real'}`}
+                  />
+                </foreignObject>
+
+                {/* Text Labels below node */}
+                <text x="0" y="32" className="node-label-title" textAnchor="middle">
+                  {node.name}
+                </text>
+                <text x="0" y="44" className="node-label-ip" textAnchor="middle">
+                  {node.ip}
+                </text>
+
+                {/* Status Pill Badge */}
+                <foreignObject x="-36" y="49" width="72" height="18">
+                  <div className={`status-pill-wrap ${badgeClass}`}>
+                    <span>{statusLabel}</span>
                   </div>
                 </foreignObject>
               </g>
             )
           })}
         </svg>
-
-        {/* Legend */}
-        <div className="graph-legend">
-          <div className="legend-item">
-            <span className="legend-swatch green-swatch"></span>
-            <span>Healthy Host</span>
-          </div>
-          <div className="legend-item">
-            <span className="legend-swatch blue-swatch"></span>
-            <span>Traversed Path</span>
-          </div>
-          <div className="legend-item">
-            <span className="legend-swatch red-swatch"></span>
-            <span>Tripped Decoy / Alert</span>
-          </div>
-          <div className="legend-item">
-            <span className="legend-swatch purple-swatch"></span>
-            <span>Armed Canary Token</span>
-          </div>
-        </div>
       </div>
     </div>
   )
