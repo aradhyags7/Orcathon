@@ -5,6 +5,7 @@ import { Clock, ShieldAlert } from 'lucide-react'
 interface IncidentTimelineProps {
   events?: SecurityEvent[]
   currentStep?: number
+  stepTimestamps?: Record<number, string>
   isCompleted?: boolean
   selectedEventId?: string
   onSelectEvent?: (eventId: string) => void
@@ -12,19 +13,19 @@ interface IncidentTimelineProps {
 
 interface TimelineItem {
   id: string
-  time: string
+  step: number
+  defaultTime: string
   title: string
   desc: string
   dotColor: string
   severityLabel?: 'High' | 'Medium' | 'Low'
-  step: number
 }
 
 const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-001',
     step: 1,
-    time: '10:24:18',
+    defaultTime: '10:24:18',
     title: 'External connection detected',
     desc: '203.0.113.44 → 10.0.0.5 (Web Server)',
     dotColor: 'dot-red',
@@ -32,7 +33,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-002',
     step: 2,
-    time: '10:24:35',
+    defaultTime: '10:24:35',
     title: 'Web server accessed',
     desc: 'Authenticated using web exploit',
     dotColor: 'dot-red',
@@ -40,7 +41,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-003',
     step: 3,
-    time: '10:25:02',
+    defaultTime: '10:25:02',
     title: 'Decoy file accessed',
     desc: 'Read payroll_records_fake.xlsx',
     dotColor: 'dot-red',
@@ -49,7 +50,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-004',
     step: 4,
-    time: '10:25:28',
+    defaultTime: '10:25:28',
     title: 'Fake credentials used',
     desc: 'Attempted login with decoy admin account',
     dotColor: 'dot-red',
@@ -58,7 +59,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-005',
     step: 5,
-    time: '10:26:01',
+    defaultTime: '10:26:01',
     title: 'Lateral movement to decoy server',
     desc: 'Accessed decoy server 10.0.0.50',
     dotColor: 'dot-amber',
@@ -67,7 +68,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-006',
     step: 6,
-    time: '10:26:32',
+    defaultTime: '10:26:32',
     title: 'Real server touched',
     desc: 'Scanned database server 10.0.0.10',
     dotColor: 'dot-green',
@@ -76,13 +77,14 @@ const allTimelineItems: TimelineItem[] = [
 ]
 
 export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
-  currentStep = 0,
+  currentStep = 6,
+  stepTimestamps = {},
   selectedEventId,
   onSelectEvent,
 }) => {
-  // Only show events that have occurred up to currentStep!
+  // Render ONLY the events that have actually occurred (No light preview text)
   const visibleItems = allTimelineItems.filter((item) => item.step <= currentStep)
-  const alertCount = visibleItems.filter((i) => i.severityLabel !== undefined).length
+  const activeAlertCount = visibleItems.filter((i) => i.severityLabel !== undefined).length
 
   return (
     <div className="panel-card incident-timeline-card">
@@ -93,7 +95,7 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
         </div>
         <span className="panel-meta-tag">
           {currentStep > 0
-            ? `${visibleItems.length} events • ${alertCount} alerts`
+            ? `${visibleItems.length} events • ${activeAlertCount} alerts`
             : '0 events recorded'}
         </span>
       </div>
@@ -101,7 +103,7 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
       <div className="timeline-body-scroll">
         {visibleItems.length === 0 ? (
           <div className="empty-state-box">
-            <ShieldAlert size={28} className="empty-state-icon" style={{ opacity: 0.4, margin: '0 auto 8px auto' }} />
+            <ShieldAlert size={26} style={{ opacity: 0.35, margin: '0 auto 8px auto' }} />
             <p>No active security telemetry.</p>
             <span>Click "Run Attack Simulation" to observe real-time intrusion events.</span>
           </div>
@@ -110,25 +112,28 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
             {visibleItems.map((item, idx) => {
               const isSelected = selectedEventId === item.id
               const isLast = idx === visibleItems.length - 1
-              const isNewlyAdded = item.step === currentStep
+              const isNewest = item.step === currentStep
+              const displayTime = stepTimestamps[item.step] || item.defaultTime
 
               return (
                 <div
                   key={item.id}
-                  className={`timeline-entry-row ${isSelected ? 'row-selected' : ''} ${isNewlyAdded ? 'entry-fade-in' : ''}`}
+                  className={`timeline-entry-row ${isSelected ? 'row-selected' : ''} ${isNewest ? 'entry-fade-in' : ''}`}
                   onClick={() => onSelectEvent?.(item.id)}
                   role="button"
                   tabIndex={0}
                 >
                   {/* Timeline Node + Track Line */}
                   <div className="track-col">
-                    <span className={`track-dot ${item.dotColor} ${isNewlyAdded ? 'track-dot-pulse' : ''}`}></span>
+                    <span
+                      className={`track-dot ${item.dotColor} ${isNewest ? 'track-dot-pulse' : ''}`}
+                    ></span>
                     {!isLast && <span className="track-vertical-line"></span>}
                   </div>
 
-                  {/* Time Stamp */}
+                  {/* Real-time Time Stamp */}
                   <div className="time-col">
-                    <span className="time-label">{item.time}</span>
+                    <span className="time-label">{displayTime}</span>
                   </div>
 
                   {/* Text Details */}
@@ -136,7 +141,9 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                     <div className="entry-title-row">
                       <span className="entry-title">{item.title}</span>
                       {item.severityLabel && (
-                        <span className={`timeline-severity-pill pill-${item.severityLabel.toLowerCase()} ${isNewlyAdded ? 'badge-pop' : ''}`}>
+                        <span
+                          className={`timeline-severity-pill pill-${item.severityLabel.toLowerCase()} ${isNewest ? 'badge-pop' : ''}`}
+                        >
                           {item.severityLabel}
                         </span>
                       )}

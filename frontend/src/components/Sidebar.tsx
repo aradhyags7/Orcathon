@@ -1,41 +1,15 @@
 import React from 'react'
-import {
-  Shield,
-  LayoutDashboard,
-  Network,
-  Box,
-  Clock,
-  Bell,
-  Activity,
-  FileText,
-  Settings,
-} from 'lucide-react'
+import { Shield, Home } from 'lucide-react'
 
 interface SidebarProps {
   activeTab?: string
   onSelectTab?: (tab: string) => void
-  alertsCount?: number
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  activeTab = 'Dashboard',
+  activeTab = 'Homepage',
   onSelectTab,
-  alertsCount = 4,
 }) => {
-  const navItems = [
-    { id: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'Network Simulation', label: 'Network Simulation', icon: Network },
-    { id: 'Decoy Assets', label: 'Decoy Assets', icon: Box },
-    { id: 'Incident Timeline', label: 'Incident Timeline', icon: Clock },
-    { id: 'Alerts', label: 'Alerts', icon: Bell, badge: alertsCount },
-    { id: 'Attack Path Analysis', label: 'Attack Path Analysis', icon: Activity },
-  ]
-
-  const secondaryItems = [
-    { id: 'Reports', label: 'Reports', icon: FileText },
-    { id: 'Settings', label: 'Settings', icon: Settings },
-  ]
-
   return (
     <aside className="sidebar-container" aria-label="Main Navigation">
       {/* Brand Header */}
@@ -49,49 +23,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Main Nav Items */}
+      {/* Main Nav Items: Only Homepage */}
       <nav className="sidebar-nav">
         <ul className="nav-list">
-          {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = activeTab === item.id
-            return (
-              <li key={item.id} className="nav-item">
-                <button
-                  type="button"
-                  className={`nav-link ${isActive ? 'nav-link-active' : ''}`}
-                  onClick={() => onSelectTab?.(item.id)}
-                >
-                  <Icon size={18} className="nav-icon" />
-                  <span className="nav-label">{item.label}</span>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span className="nav-badge">{item.badge}</span>
-                  )}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-
-        <div className="nav-divider"></div>
-
-        <ul className="nav-list secondary-list">
-          {secondaryItems.map((item) => {
-            const Icon = item.icon
-            const isActive = activeTab === item.id
-            return (
-              <li key={item.id} className="nav-item">
-                <button
-                  type="button"
-                  className={`nav-link ${isActive ? 'nav-link-active' : ''}`}
-                  onClick={() => onSelectTab?.(item.id)}
-                >
-                  <Icon size={18} className="nav-icon" />
-                  <span className="nav-label">{item.label}</span>
-                </button>
-              </li>
-            )
-          })}
+          <li className="nav-item">
+            <button
+              type="button"
+              className={`nav-link ${activeTab === 'Homepage' ? 'nav-link-active' : ''}`}
+              onClick={() => onSelectTab?.('Homepage')}
+            >
+              <Home size={18} className="nav-icon" />
+              <span className="nav-label">Homepage</span>
+            </button>
+          </li>
         </ul>
       </nav>
 
@@ -101,19 +45,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <path
             d="M-20,110 C40,70 80,130 140,80 C180,40 220,100 240,60"
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
+            stroke="rgba(0,0,0,0.06)"
             strokeWidth="1.2"
           />
           <path
             d="M-20,120 C50,85 100,140 160,90 C190,65 210,110 240,80"
             fill="none"
-            stroke="rgba(255,255,255,0.06)"
+            stroke="rgba(0,0,0,0.04)"
             strokeWidth="1.2"
           />
           <path
             d="M-20,100 C60,60 110,120 170,75 C200,50 230,90 250,70"
             fill="none"
-            stroke="rgba(255,255,255,0.04)"
+            stroke="rgba(0,0,0,0.03)"
             strokeWidth="1"
           />
         </svg>

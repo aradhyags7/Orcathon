@@ -14,11 +14,13 @@ import {
 interface AttackPathAnalysisProps {
   steps?: AttackPathStep[]
   currentStep?: number
+  stepTimestamps?: Record<number, string>
   isCompleted?: boolean
 }
 
 export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
-  currentStep = 0,
+  currentStep = 6,
+  stepTimestamps = {},
 }) => {
   const allSteps = [
     {
@@ -26,8 +28,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '1. Initial Entry',
       ip: '203.0.113.44',
       name: 'External Actor',
-      time: '10:24:18',
-      type: 'Observed',
+      defaultTime: '10:24:18',
       icon: UserX,
       theme: 'theme-red',
     },
@@ -36,8 +37,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '2. Web Server',
       ip: '10.0.0.5',
       name: 'Web Server',
-      time: '10:24:35',
-      type: 'Observed',
+      defaultTime: '10:24:35',
       icon: Server,
       theme: 'theme-green',
     },
@@ -46,8 +46,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '3. Decoy File Access',
       ip: '10.0.0.30',
       name: 'Payroll Records',
-      time: '10:25:02',
-      type: 'Observed',
+      defaultTime: '10:25:02',
       icon: FileSpreadsheet,
       theme: 'theme-amber',
     },
@@ -56,8 +55,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '4. Decoy Credentials',
       ip: '10.0.0.40',
       name: 'Admin Credentials',
-      time: '10:25:28',
-      type: 'Observed',
+      defaultTime: '10:25:28',
       icon: Key,
       theme: 'theme-amber',
     },
@@ -66,8 +64,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '5. Decoy Server',
       ip: '10.0.0.50',
       name: 'Decoy Server',
-      time: '10:26:01',
-      type: 'Observed',
+      defaultTime: '10:26:01',
       icon: Server,
       theme: 'theme-amber',
     },
@@ -76,14 +73,13 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '6. Real Server Touched',
       ip: '10.0.0.10',
       name: 'Database Server',
-      time: '10:26:32',
-      type: 'Observed',
+      defaultTime: '10:26:32',
       icon: Database,
       theme: 'theme-green',
     },
   ]
 
-  // Only render cards up to the active current step!
+  // Render ONLY the steps that have occurred in real time (No light preview text)
   const visibleSteps = allSteps.filter((s) => s.step <= currentStep)
 
   let alertsCount = 0
@@ -118,13 +114,13 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
         </div>
       </div>
 
-      {/* Horizontal Step Cards Sequence */}
+      {/* Horizontal Step Cards Sequence: Only displays actively reached steps */}
       <div className="attack-path-steps-scroll">
         {visibleSteps.length === 0 ? (
           <div className="empty-state-box">
-            <Shield size={24} style={{ opacity: 0.35, margin: '0 auto 6px auto' }} />
+            <Shield size={22} style={{ opacity: 0.35, margin: '0 auto 6px auto' }} />
             <p>Attack path reconstruction standing by.</p>
-            <span>Run simulation to visually map intruder movement across network assets.</span>
+            <span>Click "Run Attack Simulation" to observe real-time intrusion steps.</span>
           </div>
         ) : (
           <div className="attack-path-flow">
@@ -132,6 +128,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
               const Icon = step.icon
               const isLast = idx === visibleSteps.length - 1
               const isNewest = step.step === currentStep
+              const displayTime = stepTimestamps[step.step] || step.defaultTime
 
               return (
                 <React.Fragment key={step.step}>
@@ -147,12 +144,12 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
                     <div className="step-card-meta">
                       <span className="step-card-ip">{step.ip}</span>
                       <span className="step-card-name">{step.name}</span>
-                      <span className="step-card-time">{step.time}</span>
+                      <span className="step-card-time">{displayTime}</span>
                     </div>
 
                     <div className="step-card-badge">
                       <span className="observed-dot"></span>
-                      <span>{step.type}</span>
+                      <span>Observed</span>
                     </div>
                   </div>
 

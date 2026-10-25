@@ -1,5 +1,5 @@
-import React from 'react'
-import { Play, RotateCcw } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Play, RotateCcw, Download } from 'lucide-react'
 
 interface HeaderProps {
   backendAvailable: boolean
@@ -7,6 +7,7 @@ interface HeaderProps {
   simulationId?: string
   onRunSimulation: () => void
   onReset: () => void
+  onExportCsv?: () => void
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,7 +15,41 @@ export const Header: React.FC<HeaderProps> = ({
   simulationId = 'sim-001',
   onRunSimulation,
   onReset,
+  onExportCsv,
 }) => {
+  // Live ticking clock for header telemetry
+  const [liveClock, setLiveClock] = useState<string>(() => {
+    return new Date().toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      hour12: true,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+  })
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveClock(
+        new Date().toLocaleTimeString('en-US', {
+          timeZone: 'UTC',
+          hour12: true,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })
+      )
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const todayStr = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+
   return (
     <header className="top-header-bar">
       <div className="header-meta-group">
@@ -24,12 +59,24 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="header-telemetry-text">
-          <span className="telemetry-time">Oct 25, 2026 10:24:18 AM (UTC)</span>
+          <span className="telemetry-time">{todayStr} {liveClock} (UTC)</span>
           <span className="telemetry-id">Simulation ID: {simulationId}</span>
         </div>
       </div>
 
       <div className="header-actions">
+        {/* Download CSV Report Button */}
+        <button
+          id="export-csv-btn"
+          type="button"
+          className="btn-header btn-header-csv"
+          onClick={onExportCsv}
+          title="Download incident investigation report in CSV format"
+        >
+          <Download size={14} strokeWidth={2.2} />
+          <span>Export CSV</span>
+        </button>
+
         <button
           id="reset-demo-btn"
           type="button"
@@ -38,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
           disabled={isSimulating}
           title="Reset simulation telemetry to baseline"
         >
-          <RotateCcw size={15} strokeWidth={2.2} />
+          <RotateCcw size={14} strokeWidth={2.2} />
           <span>Reset Demo</span>
         </button>
 

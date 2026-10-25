@@ -7,16 +7,18 @@ import { NetworkGraph } from '../components/NetworkGraph'
 import { AttackPathAnalysis } from '../components/AttackPathAnalysis'
 import { IncidentTimeline } from '../components/IncidentTimeline'
 import { AlertDetails } from '../components/AlertDetails'
+import { downloadIncidentReportCsv } from '../lib/exportCsv'
 import { ShieldAlert } from 'lucide-react'
 
 export const DashboardPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('Dashboard')
+  const [activeTab, setActiveTab] = useState<string>('Homepage')
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined)
 
   const {
     simulation,
     graph,
     currentStep,
+    stepTimestamps,
     isSimulating,
     backendAvailable,
     toastMessage,
@@ -24,26 +26,32 @@ export const DashboardPage: React.FC = () => {
     resetDemo,
   } = useSimulation()
 
-  const isCompleted = currentStep > 0
+  const handleExportCsv = () => {
+    downloadIncidentReportCsv(
+      simulation.events,
+      simulation.alerts,
+      simulation.simulation_id
+    )
+  }
 
   return (
     <div className="deceptitrace-app">
-      {/* Left Navigation Sidebar */}
+      {/* Left Navigation Sidebar: Only Homepage */}
       <Sidebar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        alertsCount={simulation?.alerts ? simulation.alerts.length : 0}
       />
 
       {/* Main Content Workspace */}
       <div className="workspace-container">
-        {/* Top Header Controls */}
+        {/* Top Header Controls with Live Clock & CSV Export */}
         <Header
           backendAvailable={backendAvailable}
           isSimulating={isSimulating}
-          simulationId={simulation?.simulation_id || 'sim-001'}
+          simulationId={simulation.simulation_id || 'sim-001'}
           onRunSimulation={runSimulation}
           onReset={resetDemo}
+          onExportCsv={handleExportCsv}
         />
 
         {/* Real-Time Alert Toast Notification */}
@@ -67,7 +75,7 @@ export const DashboardPage: React.FC = () => {
 
           {/* 5 KPI Stat Cards */}
           <section className="dashboard-stats-section" aria-label="Incident Summary Metrics">
-            <StatCards summary={simulation?.summary} isCompleted={isCompleted} />
+            <StatCards summary={simulation.summary} isCompleted={currentStep > 0} />
           </section>
 
           {/* Main 2-Column Grid */}
@@ -79,25 +87,28 @@ export const DashboardPage: React.FC = () => {
                 currentStep={currentStep}
               />
               <AttackPathAnalysis
-                steps={simulation?.attack_path}
+                steps={simulation.attack_path}
                 currentStep={currentStep}
-                isCompleted={isCompleted}
+                stepTimestamps={stepTimestamps}
+                isCompleted={currentStep > 0}
               />
             </div>
 
             {/* Right Column: Incident Timeline + Alert Details */}
             <div className="grid-col-secondary">
               <IncidentTimeline
-                events={simulation?.events || []}
+                events={simulation.events || []}
                 currentStep={currentStep}
-                isCompleted={isCompleted}
+                stepTimestamps={stepTimestamps}
+                isCompleted={currentStep > 0}
                 selectedEventId={selectedEventId}
                 onSelectEvent={setSelectedEventId}
               />
               <AlertDetails
-                alerts={simulation?.alerts || []}
+                alerts={simulation.alerts || []}
                 currentStep={currentStep}
-                isCompleted={isCompleted}
+                stepTimestamps={stepTimestamps}
+                isCompleted={currentStep > 0}
               />
             </div>
           </div>
