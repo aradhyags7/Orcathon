@@ -2,6 +2,10 @@
 
 ## Critical Constraints
 - **NEVER push (`git push`) to main or production without explicit confirmation and permission first.**
+- **Branch Discipline**: Never push directly to `main`. All work must be committed and pushed to dedicated feature branches:
+  - Backend: `backend`
+  - Frontend: `frontend`
+  - Integration: `integration`
 - This project is developed for a **hackathon** (Orcathon 2026). Focus on high velocity, polished UI/UX, and robust demo capabilities.
 
 ## Team & Collaboration Strategy
