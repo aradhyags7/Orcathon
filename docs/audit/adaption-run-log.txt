@@ -1,0 +1,58 @@
+=== ADAPTION SDK INTEGRATION AUDIT LOG ===
+SDK Installed: True
+Status without key: {"sdk_available": true, "sdk_version": "0.15.0", "api_key_configured": false, "pipeline": "Adaptive Data - Cyber Deception SFT Curation", "supported_recipes": ["instruction_dataset", "threat_classification", "synthetic_augmentation"]}
+Curation output without key: {
+  "status": "curated_local",
+  "provider": "Adaption Labs Adaptive Data Pipeline (Local Engine)",
+  "sdk_installed": true,
+  "sdk_version": "0.15.0",
+  "pipeline": "cyber_deception_telemetry_curation_v1",
+  "records_processed": 2,
+  "decoy_trip_samples": 1,
+  "benign_samples": 1,
+  "class_balance_ratio": "1:1",
+  "data_quality_index": 0.974,
+  "training_format": "Instruction Tuning (Prompt / Completion)",
+  "training_readiness": "OPTIMIZED_FOR_SUPERVISED_FINE_TUNING",
+  "curated_sample": {
+    "prompt": "Analyze network security telemetry: EventType=connection, Source=employee-pc-01, Target=file-server-01, Evidence='SMB connection'",
+    "completion": "DECISION: BENIGN_NETWORK_TELEMETRY. Severity: LOW. Traffic: Normal communications observed between employee-pc-01 and file-server-01.",
+    "metadata": {
+      "event_id": "evt-1",
+      "is_decoy": false,
+      "mitre_technique": "N/A",
+      "token_density": 2,
+      "quality_score": 0.96
+    }
+  },
+  "note": "Adaption SDK is installed and ready. Provide ADAPTION_API_KEY in backend/.env for live cloud uploads."
+}
+
+=== TEST 2: INVALID KEY SIMULATION ===
+Client with invalid key initialized: True
+Curation output with invalid key (graceful fallback): {
+  "status": "curated_local",
+  "provider": "Adaption Labs Adaptive Data Pipeline (Local Engine)",
+  "sdk_installed": true,
+  "sdk_version": "0.15.0",
+  "pipeline": "cyber_deception_telemetry_curation_v1",
+  "records_processed": 2,
+  "decoy_trip_samples": 1,
+  "benign_samples": 1,
+  "class_balance_ratio": "1:1",
+  "data_quality_index": 0.974,
+  "training_format": "Instruction Tuning (Prompt / Completion)",
+  "training_readiness": "OPTIMIZED_FOR_SUPERVISED_FINE_TUNING",
+  "curated_sample": {
+    "prompt": "Analyze network security telemetry: EventType=connection, Source=employee-pc-01, Target=file-server-01, Evidence='SMB connection'",
+    "completion": "DECISION: BENIGN_NETWORK_TELEMETRY. Severity: LOW. Traffic: Normal communications observed between employee-pc-01 and file-server-01.",
+    "metadata": {
+      "event_id": "evt-1",
+      "is_decoy": false,
+      "mitre_technique": "N/A",
+      "token_density": 2,
+      "quality_score": 0.96
+    }
+  },
+  "note": "Adaption SDK is installed and ready. Provide ADAPTION_API_KEY in backend/.env for live cloud uploads."
+}

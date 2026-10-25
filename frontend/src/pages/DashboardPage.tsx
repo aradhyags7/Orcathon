@@ -29,6 +29,30 @@ export const DashboardPage: React.FC = () => {
       />
 
       <main className="dashboard-content">
+        {!backendAvailable && (
+          <div
+            className="backend-offline-banner"
+            role="alert"
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              color: '#fca5a5',
+              padding: '0.75rem 1rem',
+              borderRadius: '8px',
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              fontSize: '0.9rem',
+            }}
+          >
+            <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+            <span>
+              <strong>Backend API Unreachable (http://localhost:8000/api):</strong> Operating in offline demonstration mock fallback. Start the FastAPI backend server to stream live telemetry.
+            </span>
+          </div>
+        )}
+
         <StatCards
           summary={simulation?.summary}
           isCompleted={simulation !== null}

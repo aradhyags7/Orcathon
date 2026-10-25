@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import type { GraphData, Asset } from '../types/api'
 import { Laptop, Server, FileWarning, KeyRound } from 'lucide-react'
 
@@ -22,11 +22,6 @@ const NODE_COORDINATES: Record<string, NodeCoords> = {
 }
 
 export const NetworkGraph: React.FC<NetworkGraphProps> = ({ graph, activePath = [] }) => {
-  const nodeMap = useMemo(() => {
-    const map = new Map<string, Asset>()
-    graph.nodes.forEach((n) => map.set(n.id, n))
-    return map
-  }, [graph.nodes])
 
   const getNodeIcon = (kind: Asset['kind']) => {
     switch (kind) {
