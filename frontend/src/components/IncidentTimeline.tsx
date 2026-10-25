@@ -49,6 +49,9 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({ steps, event
                     <div className="timeline-step-header">
                       <div className="step-tag-row">
                         <span className="step-number">STEP {step.step}</span>
+                        <span className={`basis-pill ${step.basis === 'inferred' ? 'pill-inferred' : 'pill-recorded'}`}>
+                          {step.basis === 'inferred' ? 'Inferred Correlation' : 'Recorded Telemetry'}
+                        </span>
                         <span className="step-label">{step.label}</span>
                       </div>
                       <span className="step-time">
@@ -57,7 +60,17 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({ steps, event
                     </div>
 
                     <div className="timeline-asset-focus">
-                      <span className="asset-tag">Asset: <code>{step.asset_id}</code></span>
+                      <span className="asset-tag">
+                        Hop: <code>{step.from_asset_id || step.asset_id}</code> &rarr; <code>{step.to_asset_id || step.asset_id}</code>
+                        {step.via_asset_id && (
+                          <span className="via-tag"> (via <em>{step.via_asset_id}</em>)</span>
+                        )}
+                      </span>
+                      {evt?.canary_token && (
+                        <span className="canary-token-tag">
+                          Token: <code>{evt.canary_token}</code>
+                        </span>
+                      )}
                       {evt && (
                         <span className={`event-type-pill pill-${evt.severity}`}>
                           {evt.event_type.replace('_', ' ')}

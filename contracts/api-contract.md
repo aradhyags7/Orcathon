@@ -46,7 +46,23 @@
 - **AssetStatus**: `"healthy"` | `"suspicious"` | `"alert"` | `"isolated"`
 - **EdgeStatus**: `"normal"` | `"traversed"` | `"suspicious"` | `"blocked"`
 - **EventType**: `"connection"` | `"file_access"` | `"credential_attempt"` | `"decoy_triggered"`
-- **AlertStatus**: `"open"` | `"acknowledged"` | `"resolved"` | `"contained"`
+- **Basis**: `"recorded"` | `"inferred"`
+- **ContentSource**: `"adaption"` | `"cached"` | `"template"`
+
+### Attack Path Step Model
+```json
+{
+  "step": 1,
+  "event_id": "evt-b108a2",
+  "from_asset_id": "employee-pc-01",
+  "to_asset_id": "file-server-01",
+  "via_asset_id": null,
+  "basis": "recorded",
+  "asset_id": "employee-pc-01",
+  "label": "Initial Ingress / Infiltration",
+  "timestamp": "2026-10-25T07:42:48Z"
+}
+```
 
 ### MITRE ATT&CK Model
 ```json

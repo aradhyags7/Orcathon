@@ -44,6 +44,9 @@ export interface SecurityEvent {
   is_decoy_interaction: boolean;
   metadata: Record<string, unknown>;
   mitre_attack?: MitreAttack;
+  session_id: string;
+  canary_token?: string | null;
+  technique?: string | null;
 }
 
 export interface Alert {
@@ -65,6 +68,10 @@ export interface Alert {
 export interface AttackPathStep {
   step: number;
   event_id: string;
+  from_asset_id: string;
+  to_asset_id: string;
+  via_asset_id?: string | null;
+  basis: "recorded" | "inferred";
   asset_id: string;
   label: string;
   timestamp: string;
@@ -74,6 +81,11 @@ export interface SimulationSummary {
   events_count: number;
   alerts_count: number;
   assets_affected: number;
+  total_assets?: number;
+  real_assets_count?: number;
+  decoy_assets_count?: number;
+  intruders_count?: number;
+  decoy_interactions_count?: number;
 }
 
 export interface SimulationResult {

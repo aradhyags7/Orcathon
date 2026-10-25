@@ -21,6 +21,9 @@ class SecurityEvent(BaseModel):
     is_decoy_interaction: bool = Field(default=False, description="Whether this event interacted with a decoy")
     metadata: dict[str, Any] = Field(default_factory=dict, description="Arbitrary event metadata")
     mitre_attack: Optional[MitreAttack] = Field(default=None, description="Associated MITRE ATT&CK technique")
+    session_id: str = Field(default="sess-default", description="Adversary intrusion session ID")
+    canary_token: Optional[str] = Field(default=None, description="Canary token observed or reused in this event")
+    technique: Optional[str] = Field(default=None, description="MITRE ATT&CK technique code")
 
 class EventsResponse(BaseModel):
     events: list[SecurityEvent]
