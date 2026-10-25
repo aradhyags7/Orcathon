@@ -12,12 +12,16 @@
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/health` | Backend liveness check |
+| `GET` | `/api/scenarios` | List available attack simulation scenarios |
 | `GET` | `/api/assets` | Retrieve all network assets (normal + decoys) |
 | `GET` | `/api/graph` | Retrieve topology nodes and edges with traversal status |
 | `POST` | `/api/simulations/run` | Execute controlled attack scenario and return full result |
 | `GET` | `/api/events` | List recorded security events (`?simulation_id=...`) |
 | `GET` | `/api/alerts` | List generated detection alerts (`?simulation_id=...`) |
+| `POST` | `/api/alerts/{id}/contain` | SOAR automated host containment & credential revocation |
 | `GET` | `/api/simulations/{id}` | Retrieve completed simulation by ID |
+| `POST` | `/api/simulations/{id}/adaption-analysis` | Threat intelligence enrichment via Adaption Labs |
+| `POST` | `/api/adaption/curate-dataset` | Curate telemetry into model-ready AI fine-tuning dataset |
 | `POST` | `/api/reset` | Clear simulation state while retaining base assets |
 
 ---
@@ -27,10 +31,20 @@
 ### Enums
 - **Severity**: `"info"` | `"low"` | `"medium"` | `"high"` | `"critical"`
 - **AssetKind**: `"endpoint"` | `"server"` | `"decoy_file"` | `"honey_credential"`
-- **AssetStatus**: `"healthy"` | `"suspicious"` | `"alert"`
-- **EdgeStatus**: `"normal"` | `"traversed"` | `"suspicious"`
+- **AssetStatus**: `"healthy"` | `"suspicious"` | `"alert"` | `"isolated"`
+- **EdgeStatus**: `"normal"` | `"traversed"` | `"suspicious"` | `"blocked"`
 - **EventType**: `"connection"` | `"file_access"` | `"credential_attempt"` | `"decoy_triggered"`
-- **AlertStatus**: `"open"` | `"acknowledged"` | `"resolved"`
+- **AlertStatus**: `"open"` | `"acknowledged"` | `"resolved"` | `"contained"`
+
+### MITRE ATT&CK Model
+```json
+{
+  "technique_id": "T1486",
+  "technique_name": "Data Encrypted for Impact",
+  "tactic": "Impact"
+}
+```
+
 
 ---
 

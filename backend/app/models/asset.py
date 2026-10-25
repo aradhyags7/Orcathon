@@ -2,8 +2,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 AssetKind = Literal["endpoint", "server", "decoy_file", "honey_credential"]
-AssetStatus = Literal["healthy", "suspicious", "alert"]
-EdgeStatus = Literal["normal", "traversed", "suspicious"]
+AssetStatus = Literal["healthy", "suspicious", "alert", "isolated"]
+EdgeStatus = Literal["normal", "traversed", "suspicious", "blocked"]
 
 class Asset(BaseModel):
     id: str = Field(..., description="Unique asset identifier")

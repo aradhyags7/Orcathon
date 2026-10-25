@@ -73,12 +73,33 @@ class MemoryStore:
         self._events: list[SecurityEvent] = []
         self._alerts: list[Alert] = []
         self._simulations: dict[str, SimulationResult] = {}
+        self._isolated_asset_ids: set[str] = set()
 
     def get_assets(self) -> list[Asset]:
         return list(self._assets.values())
 
     def get_asset(self, asset_id: str) -> Optional[Asset]:
         return self._assets.get(asset_id)
+
+    def contain_alert(self, alert_id: str) -> Optional[dict]:
+        target_alert = next((a for a in self._alerts if a.id == alert_id), None)
+        if not target_alert:
+            return None
+
+        # Update alert status
+        target_alert.status = "contained"
+        # Isolate the source endpoint
+        isolated_id = target_alert.source_asset_id
+        self._isolated_asset_ids.add(isolated_id)
+        if isolated_id in self._assets:
+            self._assets[isolated_id].status = "isolated"
+
+        return {
+            "status": "contained",
+            "alert_id": alert_id,
+            "isolated_asset": isolated_id,
+            "remediation_applied": f"Host {isolated_id} severed from internal network shares; active Kerberos tickets invalidated.",
+        }
 
     def get_graph(self) -> GraphResponse:
         # Determine traversed nodes and edges based on events
@@ -87,7 +108,14 @@ class MemoryStore:
         
         updated_nodes: list[Asset] = []
         for asset in self._assets.values():
-            status = "alert" if asset.id in alerted_node_ids else ("suspicious" if asset.id in traversed_node_ids else "healthy")
+            if asset.id in self._isolated_asset_ids:
+                status = "isolated"
+            elif asset.id in alerted_node_ids:
+                status = "alert"
+            elif asset.id in traversed_node_ids:
+                status = "suspicious"
+            else:
+                status = "healthy"
             updated_nodes.append(asset.model_copy(update={"status": status}))
 
         active_pairs = {(e.source_asset_id, e.target_asset_id) for e in self._events}
@@ -95,9 +123,12 @@ class MemoryStore:
 
         updated_edges: list[NetworkEdge] = []
         for edge in self._edges:
-            is_active = (edge.source, edge.target) in active_pairs or (edge.target, edge.source) in active_pairs
-            is_suspicious = is_active and (edge.target in decoy_target_ids or edge.source in decoy_target_ids)
-            edge_status = "suspicious" if is_suspicious else ("traversed" if is_active else "normal")
+            if edge.source in self._isolated_asset_ids or edge.target in self._isolated_asset_ids:
+                edge_status = "blocked"
+            else:
+                is_active = (edge.source, edge.target) in active_pairs or (edge.target, edge.source) in active_pairs
+                is_suspicious = is_active and (edge.target in decoy_target_ids or edge.source in decoy_target_ids)
+                edge_status = "suspicious" if is_suspicious else ("traversed" if is_active else "normal")
             updated_edges.append(edge.model_copy(update={"status": edge_status}))
 
         return GraphResponse(nodes=updated_nodes, edges=updated_edges)
@@ -121,3 +152,4 @@ class MemoryStore:
         return list(self._alerts)
 
 store = MemoryStore()
+

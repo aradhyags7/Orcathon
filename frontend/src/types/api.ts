@@ -1,10 +1,24 @@
 export type Severity = "info" | "low" | "medium" | "high" | "critical";
 
+export interface MitreAttack {
+  technique_id: string;
+  technique_name: string;
+  tactic: string;
+}
+
+export interface ScenarioInfo {
+  id: string;
+  name: string;
+  description: string;
+  mitre_focus: string;
+  target_decoys: string[];
+}
+
 export interface Asset {
   id: string;
   name: string;
   kind: "endpoint" | "server" | "decoy_file" | "honey_credential";
-  status: "healthy" | "suspicious" | "alert";
+  status: "healthy" | "suspicious" | "alert" | "isolated";
   is_decoy: boolean;
   description: string;
 }
@@ -12,7 +26,7 @@ export interface Asset {
 export interface NetworkEdge {
   source: string;
   target: string;
-  status: "normal" | "traversed" | "suspicious";
+  status: "normal" | "traversed" | "suspicious" | "blocked";
 }
 
 export interface SecurityEvent {
@@ -26,6 +40,7 @@ export interface SecurityEvent {
   message: string;
   is_decoy_interaction: boolean;
   metadata: Record<string, unknown>;
+  mitre_attack?: MitreAttack;
 }
 
 export interface Alert {
@@ -38,9 +53,10 @@ export interface Alert {
   description: string;
   source_asset_id: string;
   target_asset_id: string;
-  status: "open" | "acknowledged" | "resolved";
+  status: "open" | "acknowledged" | "resolved" | "contained";
   evidence: string[];
   recommended_actions: string[];
+  mitre_attack?: MitreAttack;
 }
 
 export interface AttackPathStep {

@@ -130,3 +130,62 @@ def test_7_adaption_integration():
     assert "adaption_integration" in adapt_data
     integration = adapt_data["adaption_integration"]
     assert "provider" in integration or "status" in integration
+
+    # Test Adaptive Data curation endpoint
+    curate_res = client.post("/api/adaption/curate-dataset")
+    assert curate_res.status_code == 200
+    curate_data = curate_res.json()
+    assert curate_data["records_processed"] >= 4
+    assert curate_data["data_quality_index"] > 0.9
+
+# Test 8: Multiple Scenarios & MITRE ATT&CK Tags
+def test_8_multiple_scenarios_and_mitre():
+    # List scenarios
+    scenarios_res = client.get("/api/scenarios")
+    assert scenarios_res.status_code == 200
+    scenarios = scenarios_res.json()["scenarios"]
+    assert len(scenarios) == 3
+    scenario_ids = [s["id"] for s in scenarios]
+    assert "credential_lateral_movement" in scenario_ids
+    assert "ransomware_canary_recon" in scenario_ids
+    assert "insider_credential_dump" in scenario_ids
+
+    # Run ransomware scenario
+    rw_res = client.post("/api/simulations/run", json={"scenario_id": "ransomware_canary_recon"})
+    assert rw_res.status_code == 200
+    rw_data = rw_res.json()
+    assert rw_data["scenario_id"] == "ransomware_canary_recon"
+    
+    # Check MITRE ATT&CK tags present on events and alerts
+    for evt in rw_data["events"]:
+        assert "mitre_attack" in evt
+        if evt["mitre_attack"]:
+            assert "technique_id" in evt["mitre_attack"]
+            assert "technique_name" in evt["mitre_attack"]
+
+    for alert in rw_data["alerts"]:
+        assert alert["mitre_attack"] is not None
+        assert alert["mitre_attack"]["technique_id"] == "T1486"
+
+# Test 9: Active Threat Containment (SOAR)
+def test_9_active_containment():
+    sim_res = client.post("/api/simulations/run", json={"scenario_id": "credential_lateral_movement"})
+    alert = sim_res.json()["alerts"][0]
+    alert_id = alert["id"]
+    source_asset = alert["source_asset_id"]
+
+    # Execute containment
+    contain_res = client.post(f"/api/alerts/{alert_id}/contain")
+    assert contain_res.status_code == 200
+    contain_data = contain_res.json()
+    assert contain_data["status"] == "contained"
+    assert contain_data["isolated_asset"] == source_asset
+
+    # Verify graph reflects isolated asset and blocked edges
+    graph_res = client.get("/api/graph")
+    nodes = {n["id"]: n for n in graph_res.json()["nodes"]}
+    assert nodes[source_asset]["status"] == "isolated"
+
+    edges = graph_res.json()["edges"]
+    blocked_edges = [e for e in edges if e["source"] == source_asset or e["target"] == source_asset]
+    assert all(e["status"] == "blocked" for e in blocked_edges)

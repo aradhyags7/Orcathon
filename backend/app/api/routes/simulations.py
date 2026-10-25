@@ -1,10 +1,14 @@
 from fastapi import APIRouter, HTTPException
-from ...models.simulation import SimulationRunRequest, SimulationResult, ErrorResponse
+from ...models.simulation import SimulationRunRequest, SimulationResult, ErrorResponse, ScenariosResponse
 from ...services.simulation_engine import simulation_engine
 from ...services.adaption_client import adaption_client
 from ...repositories.memory_store import store
 
 router = APIRouter(tags=["Simulations & Incidents"])
+
+@router.get("/scenarios", response_model=ScenariosResponse)
+def list_scenarios() -> ScenariosResponse:
+    return ScenariosResponse(scenarios=simulation_engine.get_scenarios())
 
 @router.post("/simulations/run", response_model=SimulationResult)
 def run_simulation(request: SimulationRunRequest = SimulationRunRequest()) -> SimulationResult:
@@ -43,3 +47,10 @@ async def run_adaption_analysis(simulation_id: str):
         "simulation_id": simulation_id,
         "adaption_integration": analysis,
     }
+
+@router.post("/adaption/curate-dataset")
+async def curate_dataset():
+    events = [e.model_dump() for e in store.get_events()]
+    result = await adaption_client.curate_telemetry_dataset(events)
+    return result
+

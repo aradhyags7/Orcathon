@@ -1,11 +1,13 @@
 from .asset import Asset, AssetKind, AssetStatus, EdgeStatus, AssetsResponse, NetworkEdge, GraphResponse
-from .event import SecurityEvent, Severity, EventType, EventsResponse
+from .event import SecurityEvent, Severity, EventType, EventsResponse, MitreAttack
 from .alert import Alert, AlertStatus, AlertsResponse
 from .simulation import (
     AttackPathStep,
     SimulationSummary,
     SimulationRunRequest,
     SimulationResult,
+    ScenarioInfo,
+    ScenariosResponse,
     HealthResponse,
     ResetResponse,
     ErrorDetail,
@@ -24,6 +26,7 @@ __all__ = [
     "Severity",
     "EventType",
     "EventsResponse",
+    "MitreAttack",
     "Alert",
     "AlertStatus",
     "AlertsResponse",
@@ -31,6 +34,8 @@ __all__ = [
     "SimulationSummary",
     "SimulationRunRequest",
     "SimulationResult",
+    "ScenarioInfo",
+    "ScenariosResponse",
     "HealthResponse",
     "ResetResponse",
     "ErrorDetail",

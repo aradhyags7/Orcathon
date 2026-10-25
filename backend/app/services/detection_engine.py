@@ -54,6 +54,7 @@ class DetectionEngine:
                     "Revoke active sessions and Kerberos TGTs for the current user profile.",
                     "Audit file access logs on adjacent storage nodes.",
                 ],
+                mitre_attack=event.mitre_attack,
             )
             alerts.append(alert)
 
@@ -80,6 +81,7 @@ class DetectionEngine:
                     f"Quarantine {event.source_asset_id} and trigger emergency memory forensics.",
                     "Enforce MFA challenge on all downstream privileged service accounts.",
                 ],
+                mitre_attack=event.mitre_attack,
             )
             alerts.append(alert)
 
