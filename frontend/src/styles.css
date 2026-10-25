@@ -912,14 +912,14 @@ body {
 
 /* ==========================================================================
    MIDDLE COLUMN TOP: INCIDENT TIMELINE (Section 5)
-   Fits all six events in available panel height without page scroll
+   Fits all six events in available panel height with prominent readable fonts
    ========================================================================== */
 .incident-timeline-card {
-  flex: 1.35;
+  flex: 1.62;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
+  padding: 10px 14px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -934,16 +934,16 @@ body {
 .vertical-timeline-track {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   padding: 2px 0;
 }
 
 .timeline-entry-row {
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  padding: 3px 4px;
-  border-radius: 5px;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
@@ -957,14 +957,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 10px;
-  padding-top: 4px;
+  width: 12px;
+  padding-top: 5px;
   position: relative;
 }
 
 .track-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   z-index: 2;
 }
@@ -975,22 +975,22 @@ body {
 
 .track-vertical-line {
   position: absolute;
-  top: 10px;
-  bottom: -10px;
+  top: 12px;
+  bottom: -12px;
   width: 1px;
   background-color: #E5E0D5;
   z-index: 1;
 }
 
 .time-col {
-  width: 48px;
+  width: 52px;
   flex-shrink: 0;
   padding-top: 1px;
 }
 
 .time-label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
 }
 
@@ -1006,11 +1006,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: 6px;
 }
 
 .entry-title {
-  font-size: 0.72rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--text-title);
   white-space: nowrap;
@@ -1019,10 +1019,10 @@ body {
 }
 
 .timeline-severity-pill {
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  padding: 1px 4px;
-  border-radius: 3px;
+  padding: 1.5px 6px;
+  border-radius: 4px;
 }
 
 .timeline-severity-pill.pill-high {
@@ -1044,9 +1044,9 @@ body {
 }
 
 .entry-desc {
-  font-size: 0.64rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
-  line-height: 1.25;
+  line-height: 1.35;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1054,14 +1054,16 @@ body {
 
 /* ==========================================================================
    MIDDLE COLUMN BOTTOM: DECOY TRIPWIRES (Section 6)
-   Compact panel showing 3 configured decoys with Monitoring vs Triggered
+   Compact, shorter card with items distributed evenly and zero bottom gap
    ========================================================================== */
 .canary-traps-card {
-  flex: 1;
+  flex: 0.88;
+  max-height: 250px;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
+  justify-content: space-between;
+  padding: 9px 12px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -1075,42 +1077,42 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3px 6px;
+  padding: 4px 8px;
   background-color: #F8F5EE;
   border: 1px solid #EFEAE0;
-  border-radius: 5px;
-  margin-bottom: 4px;
+  border-radius: 6px;
+  margin-bottom: 5px;
   flex-shrink: 0;
 }
 
 .canary-status-left {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .safe-icon-green { color: #16A34A; flex-shrink: 0; }
 .safe-icon-alert { color: #DC2626; flex-shrink: 0; }
 
 .canary-active-title {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #1F2937;
 }
 
 .canary-meta-time {
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
 }
 
 .canary-subnet-meta {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.62rem;
+  gap: 5px;
+  font-size: 0.66rem;
   color: var(--text-muted);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   flex-shrink: 0;
 }
 
@@ -1124,6 +1126,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   overflow-y: auto;
 }
 
@@ -1131,14 +1134,14 @@ body {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .canary-endpoint-item {
-  padding: 3px 6px;
+  padding: 4px 7px;
   background-color: #FAF8F5;
   border: 1px solid var(--border-card);
-  border-radius: 5px;
+  border-radius: 6px;
   transition: all 0.15s ease;
 }
 
@@ -1154,7 +1157,7 @@ body {
 }
 
 .endpoint-name {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: var(--text-title);
 }
@@ -1163,9 +1166,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 0.55rem;
+  font-size: 0.60rem;
   font-weight: 700;
-  padding: 1px 5px;
+  padding: 1.5px 6px;
   border-radius: 8px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -1197,26 +1200,26 @@ body {
 
 .endpoint-ip {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   color: #4B5563;
   font-weight: 500;
 }
 
 .endpoint-desc {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   color: var(--text-light);
 }
 
 /* ==========================================================================
    RIGHT COLUMN: ALERT DETAILS (Section 7)
-   Occupies available vertical space cleanly with pagination, evidence & actions
+   Larger readable fonts, clean spacing, no clipping
    ========================================================================== */
 .alert-details-card {
   height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 8px 14px;
+  padding: 10px 14px;
   box-sizing: border-box;
   overflow-y: auto;
 }
@@ -1224,13 +1227,13 @@ body {
 .pagination-controls {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 
 .pager-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
   border: 1px solid var(--border-card);
   background: #FFFFFF;
   display: flex;
@@ -1246,9 +1249,9 @@ body {
 }
 
 .pager-text {
-  font-size: 0.67rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  min-width: 36px;
+  min-width: 40px;
   text-align: center;
 }
 
@@ -1256,32 +1259,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
-  padding-bottom: 5px;
+  gap: 8px;
+  padding-bottom: 7px;
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
 .alert-meta-left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .severity-tag {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
-  border-radius: 8px;
-  font-size: 0.65rem;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9px;
+  font-size: 0.74rem;
   font-weight: 700;
 }
 
 .severity-dot {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background-color: currentColor;
 }
@@ -1302,42 +1305,42 @@ body {
 }
 
 .alert-main-title {
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   font-weight: 700;
   color: var(--text-title);
 }
 
 .alert-meta-time {
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
 }
 
 .alert-fields-grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 0.68rem;
+  gap: 6px;
+  font-size: 0.76rem;
   flex: 1;
 }
 
 .field-row {
   display: grid;
-  grid-template-columns: 85px 1fr;
+  grid-template-columns: 96px 1fr;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field-label {
   color: var(--text-muted);
-  font-weight: 500;
-  font-size: 0.64rem;
+  font-weight: 600;
+  font-size: 0.74rem;
 }
 
 .field-value {
   color: var(--text-main);
   font-weight: 600;
-  font-size: 0.68rem;
+  font-size: 0.80rem;
 }
 
 .field-value.target-highlight {
@@ -1347,19 +1350,19 @@ body {
 .vertical-field {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: 2px;
+  gap: 3px;
+  margin-top: 3px;
 }
 
 .evidence-bullet-list {
   list-style: disc;
-  padding-left: 14px;
+  padding-left: 16px;
   color: var(--text-main);
-  font-size: 0.64rem;
-  line-height: 1.3;
+  font-size: 0.74rem;
+  line-height: 1.45;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .action-bullet-list li {
@@ -1373,19 +1376,19 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 20px 8px;
+  padding: 24px 10px;
   flex: 1;
 }
 
 .standby-icon-circle {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background-color: #E8F5EE;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .standby-glyph-green {
@@ -1393,18 +1396,18 @@ body {
 }
 
 .standby-headline {
-  font-size: 0.8rem;
+  font-size: 0.94rem;
   font-weight: 700;
   color: var(--text-title);
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .standby-desc {
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  max-width: 240px;
-  line-height: 1.35;
-  margin-bottom: 8px;
+  max-width: 250px;
+  line-height: 1.4;
+  margin-bottom: 10px;
 }
 
 .standby-desc code {
@@ -1416,15 +1419,15 @@ body {
 .standby-notice-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
+  gap: 5px;
+  padding: 3px 10px;
   background-color: #F8F5EE;
   border: 1px solid #EAE5DB;
   border-radius: 12px;
-  font-size: 0.62rem;
+  font-size: 0.70rem;
   font-weight: 600;
   color: #15803D;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .notice-dot-green {
@@ -1435,10 +1438,10 @@ body {
 }
 
 .standby-footnote {
-  font-size: 0.62rem;
+  font-size: 0.70rem;
   color: var(--text-light);
-  max-width: 230px;
-  line-height: 1.3;
+  max-width: 240px;
+  line-height: 1.35;
 }
 
 .empty-state-box {
