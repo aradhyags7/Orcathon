@@ -12,7 +12,6 @@ interface AlertDetailsProps {
 export const AlertDetails: React.FC<AlertDetailsProps> = ({
   alerts = [],
   currentStep = 6,
-  stepTimestamps = {},
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
 
@@ -25,10 +24,8 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
     }
   }, [alerts.length])
 
-  // If before first decoy reached (step < 3), render baseline armed sentinel card so layout never jumps/disappears
+  // If before first decoy reached (step < 3), render clean awaiting state since Canaries are in the dedicated box
   if (alerts.length === 0 || currentStep < 3) {
-    const liveTime = stepTimestamps[1] || new Date().toLocaleTimeString('en-US', { hour12: false })
-
     return (
       <div className="panel-card alert-details-card">
         <div className="panel-header-row">
@@ -36,40 +33,20 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
             <Bell size={16} className="panel-title-icon" />
             <h2 className="panel-title-text">Alert Details</h2>
           </div>
-          <span className="panel-meta-tag">Canaries Armed</span>
+          <span className="panel-meta-tag">0 Active Alerts</span>
         </div>
 
-        <div className="alert-header-highlight">
-          <div className="alert-meta-left">
-            <span className="severity-tag tag-info">
-              <span className="severity-dot"></span>
-              Armed
-            </span>
-            <h3 className="alert-main-title">Decoy Tripwires Active</h3>
+        <div className="alert-empty-placeholder">
+          <div className="alert-empty-icon-wrap">
+            <Bell size={24} className="alert-empty-bell" />
           </div>
-          <span className="alert-meta-time">{liveTime}</span>
-        </div>
-
-        <div className="alert-fields-grid">
-          <div className="field-row">
-            <span className="field-label">Monitoring</span>
-            <span className="field-value">Internal Subnet 10.0.0.0/24</span>
-          </div>
-          <div className="field-row">
-            <span className="field-label">Canary Assets</span>
-            <span className="field-value target-highlight">3 Monitored Decoys (Files, Creds, Server)</span>
-          </div>
-          <div className="field-row">
-            <span className="field-label">Status</span>
-            <span className="field-value">Armed • Zero Intruder Contact</span>
-          </div>
-          <div className="field-row vertical-field">
-            <span className="field-label">Monitored Trap Endpoints</span>
-            <ul className="evidence-bullet-list">
-              <li>Payroll Records: <code>10.0.0.30 (fake .xlsx canary)</code></li>
-              <li>Admin Credentials: <code>10.0.0.40 (decoy root key)</code></li>
-              <li>Decoy Server: <code>10.0.0.50 (honeypot node)</code></li>
-            </ul>
+          <h3 className="alert-empty-title">No Security Alerts Triggered</h3>
+          <p className="alert-empty-desc">
+            All decoy tripwires are armed across the subnet. As soon as an intruder interacts with a monitored canary asset, high-severity forensic alerts and mitigations will appear here.
+          </p>
+          <div className="alert-empty-footer-pill">
+            <span className="empty-dot-green"></span>
+            <span>Awaiting Canary Tripwire Interaction</span>
           </div>
         </div>
       </div>

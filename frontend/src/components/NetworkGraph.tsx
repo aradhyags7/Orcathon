@@ -178,24 +178,26 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
           <defs>
             <marker
               id="arrow-attack"
-              markerWidth="8"
-              markerHeight="8"
-              refX="18"
-              refY="4"
+              viewBox="0 0 10 10"
+              refX="6"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
               orient="auto"
             >
-              <polygon points="0 1, 8 4, 0 7" fill="#dc2626" />
+              <polygon points="0 2, 7 5, 0 8" fill="#dc2626" />
             </marker>
 
             <marker
               id="arrow-normal"
-              markerWidth="7"
-              markerHeight="7"
-              refX="16"
-              refY="3.5"
+              viewBox="0 0 10 10"
+              refX="6"
+              refY="5"
+              markerWidth="5"
+              markerHeight="5"
               orient="auto"
             >
-              <polygon points="0 1, 6 3.5, 0 6" fill="#9ca3af" />
+              <polygon points="0 2, 6 5, 0 8" fill="#9ca3af" />
             </marker>
           </defs>
 
@@ -207,7 +209,6 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
             y2={TOPOLOGY_NODES['file-server-01'].y}
             className="conn-normal"
             markerEnd="url(#arrow-normal)"
-            markerStart="url(#arrow-normal)"
           />
 
           <line
@@ -217,7 +218,6 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
             y2={TOPOLOGY_NODES['web-server-01'].y - 22}
             className="conn-normal"
             markerEnd="url(#arrow-normal)"
-            markerStart="url(#arrow-normal)"
           />
 
           <line
@@ -339,7 +339,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
               <g
                 key={id}
                 transform={`translate(${node.x}, ${node.y})`}
-                className="node-item-group"
+                className={`node-item-group ${isAlerted || isCompromised || (isActor && isActorActive) ? 'node-group-active' : ''}`}
               >
                 {/* Node Avatar Circle */}
                 <circle
@@ -348,11 +348,6 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
                   r={isActor ? '24' : '20'}
                   className={circleClass}
                 />
-
-                {/* Pulsing Beacon strictly positioned around this node */}
-                {(isActorActive && isActor) || isAlerted || isCompromised ? (
-                  <circle cx="0" cy="0" r="28" className="beacon-actor-pulse" />
-                ) : null}
 
                 {/* Inner Icon */}
                 <foreignObject

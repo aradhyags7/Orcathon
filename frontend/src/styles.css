@@ -55,6 +55,15 @@
   padding: 0;
 }
 
+html, body, #root {
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-app);
@@ -62,15 +71,17 @@ body {
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
-/* Master App Layout (Sidebar + Workspace) */
+/* Master App Layout (Full-Width Header Top + Workspace Below) */
 .deceptitrace-app {
   display: flex;
-  min-height: 100vh;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
   width: 100vw;
   background-color: var(--bg-app);
+  overflow: hidden;
 }
 
 /* ==========================================================================
@@ -245,56 +256,106 @@ body {
 }
 
 /* ==========================================================================
-   2. WORKSPACE CONTAINER & TOP HEADER
+   2. TOP HEADER BAR (Full-Width with Branding on Top-Left)
    ========================================================================== */
-.workspace-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
-
 .top-header-bar {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
-  gap: 28px;
-  padding: 16px 36px;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  padding: 0 18px;
   background-color: var(--bg-app);
   border-bottom: 1px solid var(--border-card);
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
   z-index: 40;
 }
 
 .header-meta-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+.header-brand-pill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  user-select: none;
+}
+
+.header-brand-icon-wrap {
+  width: 28px;
+  height: 28px;
+  background-color: #0E2A1E;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(14, 42, 30, 0.25);
+}
+
+.header-brand-shield {
+  color: #FFFFFF;
+}
+
+.header-brand-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.header-brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0E2A1E;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.header-brand-tagline {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: #6B7280;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.header-v-divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-card);
+  margin: 0 2px;
 }
 
 .env-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 4px 12px;
+  gap: 6px;
+  padding: 3px 10px;
   background-color: #E8F5EE;
   border: 1px solid #CDE8D8;
   border-radius: 20px;
 }
 
 .env-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background-color: #16A34A;
   box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
 }
 
 .env-text {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: #1B5E39;
 }
@@ -302,18 +363,19 @@ body {
 .header-telemetry-text {
   display: flex;
   flex-direction: column;
-  text-align: right;
+  text-align: left;
   font-family: var(--font-sans);
+  margin-left: 2px;
 }
 
 .telemetry-time {
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: var(--text-muted);
 }
 
 .telemetry-id {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-family: var(--font-mono);
   color: var(--text-light);
 }
@@ -321,17 +383,17 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .btn-header {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 7px;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.16s ease;
@@ -379,8 +441,8 @@ body {
 }
 
 .btn-spinner {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #FFFFFF;
   border-radius: 50%;
@@ -392,76 +454,84 @@ body {
 }
 
 /* ==========================================================================
-   3. DASHBOARD MAIN VIEW
+   3. DASHBOARD MAIN VIEW (Single-Screen Strict Fit)
    ========================================================================== */
 .dashboard-main-view {
-  padding: 24px 36px 48px 36px;
+  height: calc(100vh - 48px);
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
+  padding: 6px 18px 8px 18px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* Hero Section */
-.dashboard-hero {
+/* Compact Hero Strip */
+.dashboard-hero-strip {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 8px;
+  height: 16px;
+  min-height: 16px;
+  flex-shrink: 0;
+  font-size: 0.74rem;
 }
 
 .hero-kicker {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #7D786E;
+  white-space: nowrap;
 }
 
-.hero-title {
-  font-family: var(--font-serif);
-  font-size: 2.25rem;
-  font-weight: 600;
-  color: var(--text-title);
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+.hero-strip-sep {
+  color: #B8B2A6;
+  font-size: 0.68rem;
 }
 
-.hero-description {
-  font-size: 0.88rem;
+.hero-strip-desc {
+  font-size: 0.74rem;
   color: var(--text-muted);
-  max-width: 900px;
-  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ==========================================================================
-   4. STAT CARDS ROW (5 CARDS)
+   4. STAT CARDS ROW (5 CARDS - Compact Fit)
    ========================================================================== */
 .stat-cards-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
+  gap: 8px;
+  height: 54px;
+  min-height: 54px;
+  max-height: 54px;
+  flex-shrink: 0;
 }
 
 .stat-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-card);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 8px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   box-shadow: var(--shadow-card);
   position: relative;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .stat-icon-wrapper {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -494,38 +564,41 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .stat-title {
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   font-weight: 500;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.1;
 }
 
 .stat-value {
-  font-size: 1.45rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-title);
-  line-height: 1.15;
+  line-height: 1;
   margin: 1px 0;
 }
 
 .stat-subtext {
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   color: var(--text-light);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.1;
 }
 
 .stat-card-spark {
   display: flex;
   align-items: flex-end;
-  gap: 2.5px;
-  height: 24px;
+  gap: 2px;
+  height: 16px;
 }
 
 .spark-bar {
@@ -547,50 +620,59 @@ body {
 }
 
 /* ==========================================================================
-   5. DASHBOARD 2-COLUMN CONTENT GRID
+   5. DASHBOARD 2-COLUMN CONTENT GRID (Strict Single-Screen Viewport Fit)
    ========================================================================== */
 .dashboard-content-grid {
+  flex: 1;
+  min-height: 0;
   display: grid;
-  grid-template-columns: 1fr 390px;
-  gap: 18px;
-  align-items: start;
+  grid-template-columns: 1fr 360px;
+  gap: 8px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .grid-col-primary {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  min-width: 0;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .grid-col-secondary {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  min-width: 0;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Shared Panel Card Styling */
 .panel-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-card);
-  border-radius: 12px;
-  padding: 18px 20px;
+  border-radius: 10px;
+  padding: 6px 10px;
   box-shadow: var(--shadow-card);
+  box-sizing: border-box;
 }
 
 .panel-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
 }
 
 .panel-title-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .panel-title-icon {
@@ -599,43 +681,50 @@ body {
 
 .panel-title-text {
   font-family: var(--font-sans);
-  font-size: 0.98rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: var(--text-title);
   letter-spacing: -0.01em;
 }
 
 .panel-meta-tag {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   color: var(--text-muted);
   font-weight: 500;
 }
 
 /* ==========================================================================
-   6. NETWORK SIMULATION TOPOLOGY PANEL
+   6. NETWORK SIMULATION TOPOLOGY PANEL (Compact Viewport Scaling: 240px)
    ========================================================================== */
 .network-sim-card {
-  padding-bottom: 12px;
+  height: 240px;
+  max-height: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .topology-legend {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  font-size: 0.69rem;
+  gap: 8px;
+  font-size: 0.62rem;
   color: var(--text-muted);
 }
 
 .legend-entry {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
 }
 
 .dot {
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
 }
 
@@ -644,7 +733,7 @@ body {
 .dot-red { background-color: #DC2626; }
 
 .line-legend {
-  width: 16px;
+  width: 12px;
   height: 2px;
 }
 
@@ -661,24 +750,31 @@ body {
 }
 
 .topology-canvas-container {
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: #FAF8F5;
   border: 1px solid var(--border-subtle);
   overflow: hidden;
-  padding: 8px 4px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .topology-svg {
   width: 100%;
-  height: auto;
+  height: 100%;
+  max-height: 200px;
   display: block;
 }
 
 /* SVG Connection Lines */
 .conn-normal {
   stroke: #9CA3AF;
-  stroke-width: 1.6;
+  stroke-width: 1.5;
 }
 
 .conn-attack-dashed {
@@ -701,29 +797,36 @@ body {
 .circle-real {
   fill: #E8F5EE;
   stroke: #1B5E39;
-  stroke-width: 2.2;
+  stroke-width: 2;
 }
 
 .circle-decoy {
   fill: #FEF6E9;
   stroke: #D97706;
-  stroke-width: 2.2;
+  stroke-width: 2;
 }
 
 .circle-actor {
   fill: #FEECEB;
   stroke: #DC2626;
+  stroke-width: 2;
+}
+
+.circle-real-compromised {
+  fill: #FEE2E2;
+  stroke: #DC2626;
   stroke-width: 2.2;
 }
 
-.beacon-actor-pulse {
-  fill: rgba(220, 38, 38, 0.12);
-  animation: pulseBeacon 2s ease-in-out infinite;
+.circle-decoy-alerted {
+  fill: #FEECEB;
+  stroke: #DC2626;
+  stroke-width: 2.2;
 }
 
-@keyframes pulseBeacon {
-  0%, 100% { r: 24; opacity: 0.3; }
-  50% { r: 32; opacity: 0.7; }
+/* Clean GPU-accelerated glowing halo for active node (ZERO SVG half-circle glitch) */
+.node-group-active .node-circle {
+  filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.6));
 }
 
 .node-glyph {
@@ -737,25 +840,24 @@ body {
 
 .node-label-title {
   font-family: var(--font-sans);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   fill: var(--text-title);
 }
 
 .node-label-sub {
   font-family: var(--font-sans);
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 500;
   fill: #857F77;
 }
 
 .node-label-ip {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 9px;
   fill: #78716C;
 }
 
-/* Status Pill inside SVG ForeignObject */
 .status-pill-wrap {
   width: 100%;
   height: 100%;
@@ -763,7 +865,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 9px;
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
   font-family: var(--font-sans);
   text-transform: capitalize;
@@ -791,66 +893,92 @@ body {
 }
 
 /* ==========================================================================
-   7. ATTACK PATH ANALYSIS PANEL (BOTTOM PRIMARY)
+   7. ATTACK PATH & CANARY DECOY TRAPS SPLIT ROW (Always Visible on Screen)
    ========================================================================== */
+.attack-path-split-row {
+  flex: 1;
+  min-height: 190px;
+  max-height: 230px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.attack-path-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .path-legend-group {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 0.69rem;
-  color: var(--text-muted);
+  gap: 6px;
+  font-size: 0.62rem;
 }
 
 .path-meta-tag {
-  font-weight: 600;
-  color: var(--text-main);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .attack-path-steps-scroll {
+  flex: 1;
+  min-height: 0;
   overflow-x: auto;
-  padding: 4px 0 6px 0;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
 
 .attack-path-flow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 680px;
+  gap: 5px;
+  width: 100%;
 }
 
 .path-step-card {
   flex: 1;
+  min-width: 72px;
   background-color: #FAF8F5;
   border: 1px solid var(--border-card);
-  border-radius: 10px;
-  padding: 12px 10px;
+  border-radius: 6px;
+  padding: 4px 3px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  position: relative;
+  box-sizing: border-box;
   transition: transform 0.15s ease;
 }
 
 .path-step-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   border-color: #DDD5C5;
 }
 
 .step-card-title {
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--text-title);
-  margin-bottom: 8px;
+  margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .step-card-icon-wrap {
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .step-avatar {
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -875,43 +1003,46 @@ body {
 .step-card-meta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-bottom: 8px;
+  gap: 1px;
+  margin-bottom: 3px;
 }
 
 .step-card-ip {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   color: var(--text-muted);
 }
 
 .step-card-name {
-  font-size: 0.73rem;
+  font-size: 0.64rem;
   font-weight: 600;
   color: var(--text-main);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 74px;
 }
 
 .step-card-time {
-  font-size: 0.65rem;
+  font-size: 0.56rem;
   color: var(--text-light);
 }
 
 .step-card-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 10px;
+  gap: 2px;
+  padding: 1px 4px;
+  border-radius: 6px;
   background-color: #FEE2E2;
   color: #B91C1C;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   font-weight: 600;
 }
 
 .observed-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background-color: #DC2626;
 }
@@ -919,37 +1050,202 @@ body {
 .step-connector {
   display: flex;
   align-items: center;
-  gap: 2px;
   color: #DC2626;
-  opacity: 0.85;
+  opacity: 0.6;
 }
 
 .connector-dashed-line {
-  width: 14px;
+  width: 8px;
   height: 2px;
-  background: repeating-linear-gradient(90deg, #DC2626, #DC2626 3px, transparent 3px, transparent 6px);
+  background: repeating-linear-gradient(90deg, #DC2626, #DC2626 2px, transparent 2px, transparent 4px);
 }
 
 .connector-arrow {
-  margin-left: -4px;
+  margin-left: -2px;
 }
 
 /* ==========================================================================
-   8. INCIDENT TIMELINE (TOP SECONDARY)
+   8. CANARY DECOY TRAPS PANEL (Small Box beside Attack Path)
    ========================================================================== */
+.canary-traps-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+}
+
+.tag-meta-alerted {
+  color: #DC2626 !important;
+  font-weight: 600;
+}
+
+.canary-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 5px;
+  background-color: #F8F5EE;
+  border: 1px solid #EFEAE0;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.canary-status-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.canary-active-title {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.canary-meta-time {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+}
+
+.canary-specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 4px;
+}
+
+.canary-spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.62rem;
+}
+
+.spec-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.spec-val {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.canary-endpoints-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.endpoints-header-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.canary-endpoints-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.canary-endpoint-item {
+  padding: 2px 4px;
+  background-color: #FAF8F5;
+  border: 1px solid var(--border-card);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.canary-endpoint-item.item-tripped {
+  background-color: #FEECEB;
+  border-color: #FCA5A5;
+}
+
+.endpoint-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.endpoint-name {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.endpoint-status-pill {
+  font-size: 0.52rem;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.pill-armed {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.pill-tripped {
+  background-color: #FEE2E2;
+  color: #DC2626;
+}
+
+.endpoint-detail {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.endpoint-detail code {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  color: #4B5563;
+}
+
+/* ==========================================================================
+   9. INCIDENT TIMELINE & ALERT DETAILS (Right Column - Shifted Up)
+   ========================================================================== */
+.timeline-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.timeline-events-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
 .vertical-timeline-track {
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 6px 0;
+  padding: 2px 0;
 }
 
 .timeline-entry-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 8px 6px;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 3px 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
@@ -963,14 +1259,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 14px;
-  padding-top: 5px;
+  width: 10px;
+  padding-top: 4px;
   position: relative;
 }
 
 .track-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   z-index: 2;
 }
@@ -981,22 +1277,22 @@ body {
 
 .track-vertical-line {
   position: absolute;
-  top: 13px;
-  bottom: -15px;
-  width: 1.5px;
+  top: 10px;
+  bottom: -10px;
+  width: 1px;
   background-color: #E5E0D5;
   z-index: 1;
 }
 
 .time-col {
-  width: 56px;
+  width: 48px;
   flex-shrink: 0;
   padding-top: 1px;
 }
 
 .time-label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
 }
 
@@ -1005,27 +1301,27 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .entry-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 4px;
 }
 
 .entry-title {
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-title);
 }
 
 .timeline-severity-pill {
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  padding: 1px 7px;
-  border-radius: 4px;
+  padding: 1px 4px;
+  border-radius: 3px;
 }
 
 .timeline-severity-pill.pill-high {
@@ -1047,24 +1343,31 @@ body {
 }
 
 .entry-desc {
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   color: var(--text-muted);
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
-/* ==========================================================================
-   9. ALERT DETAILS (BOTTOM SECONDARY)
-   ========================================================================== */
+.alert-details-card {
+  flex: 1.1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
 .pagination-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .pager-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
   border: 1px solid var(--border-card);
   background: #FFFFFF;
   display: flex;
@@ -1072,17 +1375,12 @@ body {
   justify-content: center;
   color: var(--text-main);
   cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.pager-btn:hover {
-  background-color: #F5F2EA;
 }
 
 .pager-text {
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
-  min-width: 44px;
+  min-width: 36px;
   text-align: center;
 }
 
@@ -1090,31 +1388,31 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding-bottom: 12px;
+  gap: 6px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .alert-meta-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .severity-tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 0.72rem;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
   font-weight: 700;
 }
 
 .severity-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background-color: currentColor;
 }
@@ -1135,40 +1433,41 @@ body {
 }
 
 .alert-main-title {
-  font-size: 0.86rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-title);
 }
 
 .alert-meta-time {
   font-family: var(--font-mono);
-  font-size: 0.73rem;
+  font-size: 0.66rem;
   color: var(--text-muted);
 }
 
-/* Key-Value Fields Grid */
 .alert-fields-grid {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  font-size: 0.76rem;
+  gap: 4px;
+  font-size: 0.68rem;
 }
 
 .field-row {
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 85px 1fr;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
 }
 
 .field-label {
   color: var(--text-muted);
   font-weight: 500;
+  font-size: 0.64rem;
 }
 
 .field-value {
   color: var(--text-main);
   font-weight: 600;
+  font-size: 0.66rem;
 }
 
 .field-value.target-highlight {
@@ -1178,58 +1477,100 @@ body {
 .vertical-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 3px;
+  gap: 2px;
+  margin-top: 2px;
 }
 
 .evidence-bullet-list {
   list-style: disc;
-  padding-left: 18px;
+  padding-left: 14px;
   color: var(--text-main);
-  font-size: 0.74rem;
-  line-height: 1.45;
+  font-size: 0.64rem;
+  line-height: 1.3;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
 }
 
 .empty-state-box,
 .empty-alert-state {
-  padding: 24px 16px;
+  padding: 14px 10px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
 }
 
-/* ==========================================================================
-   10. RESPONSIVE BREAKPOINTS
-   ========================================================================== */
-@media (max-width: 1280px) {
-  .dashboard-content-grid {
-    grid-template-columns: 1fr;
-  }
+.alert-empty-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px 8px;
+  flex: 1;
 }
 
-@media (max-width: 992px) {
-  .stat-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ==========================================================================
-   11. REAL-TIME SIMULATION & ANIMATION EFFECTS
-   ========================================================================== */
-.live-toast-banner {
-  margin: 12px 36px 0 36px;
-  padding: 10px 16px;
-  background-color: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-radius: 8px;
+.alert-empty-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #E8F5EE;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  color: #16A34A;
+  margin-bottom: 4px;
+}
+
+.alert-empty-title {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-title);
+  margin-bottom: 2px;
+}
+
+.alert-empty-desc {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  max-width: 230px;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.alert-empty-footer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background-color: #F8F5EE;
+  border: 1px solid #EFEAE0;
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: #15803D;
+}
+
+.empty-dot-green {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #16A34A;
+}
+
+/* ==========================================================================
+   10. REAL-TIME SIMULATION & ANIMATION EFFECTS
+   ========================================================================== */
+.live-toast-banner {
+  margin: 4px 18px 0 18px;
+  padding: 6px 12px;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   animation: slideDownToast 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.08);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
 }
 
 .toast-icon {
@@ -1238,29 +1579,14 @@ body {
 }
 
 .toast-text {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #991B1B;
 }
 
 @keyframes slideDownToast {
-  from { opacity: 0; transform: translateY(-8px); }
+  from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* Compromised & Alerted Node Avatar Styling */
-.circle-real-compromised {
-  fill: #FEE2E2;
-  stroke: #DC2626;
-  stroke-width: 2.5;
-  transition: all 0.4s ease;
-}
-
-.circle-decoy-alerted {
-  fill: #FEF3C7;
-  stroke: #DC2626;
-  stroke-width: 2.5;
-  transition: all 0.4s ease;
 }
 
 .node-alerted-bounce {
@@ -1269,27 +1595,8 @@ body {
 
 @keyframes subtleBounce {
   0% { transform: scale(1); }
-  40% { transform: scale(1.08); }
+  40% { transform: scale(1.06); }
   100% { transform: scale(1); }
-}
-
-/* Progressive Reveal Animations */
-.entry-fade-in {
-  animation: fadeSlideIn 0.35s ease-out;
-}
-
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.badge-pop {
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popIn {
-  from { transform: scale(0.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
 }
 
 .card-newly-revealed {
@@ -1298,7 +1605,7 @@ body {
 }
 
 @keyframes cardReveal {
-  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -1307,85 +1614,6 @@ body {
 }
 
 @keyframes alertFlash {
-  0% { background-color: rgba(220, 38, 38, 0.1); }
+  0% { background-color: rgba(220, 38, 38, 0.08); }
   100% { background-color: transparent; }
-}
-
-.traveling-laser-pulse {
-  filter: drop-shadow(0 0 4px #DC2626);
-}
-
-/* Zero-Layout-Shift Standby & Active States */
-.card-standby {
-  opacity: 0.45;
-  filter: grayscale(0.2);
-  transition: all 0.35s ease;
-}
-
-.card-reached {
-  opacity: 1;
-  filter: none;
-  transition: all 0.35s ease;
-}
-
-.card-just-activated {
-  animation: cardPulseActive 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  border-color: #DC2626 !important;
-}
-
-@keyframes cardPulseActive {
-  0% { transform: scale(0.96); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-  50% { transform: scale(1.03); box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.15); }
-  100% { transform: scale(1); box-shadow: none; }
-}
-
-.theme-standby {
-  background-color: #F0ECE3;
-  color: #9CA3AF;
-}
-
-.badge-pending {
-  background-color: #F3F0E8;
-  color: #9CA3AF;
-}
-
-.dot-inactive {
-  background-color: #9CA3AF;
-}
-
-.connector-standby {
-  opacity: 0.35;
-  color: #9CA3AF;
-}
-
-.connector-standby .connector-dashed-line {
-  background: repeating-linear-gradient(90deg, #9CA3AF, #9CA3AF 3px, transparent 3px, transparent 6px);
-}
-
-.connector-active {
-  opacity: 1;
-  color: #DC2626;
-}
-
-/* Timeline Standby & Active States */
-.row-standby {
-  opacity: 0.42;
-  transition: opacity 0.3s ease;
-}
-
-.row-active {
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.dot-standby {
-  background-color: #D1D5DB;
-}
-
-.line-standby {
-  background-color: #E5E7EB;
-}
-
-.line-active {
-  background-color: #E5E0D5;
 }
