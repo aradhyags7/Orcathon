@@ -29,7 +29,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '1. Initial Entry',
       ip: '203.0.113.44',
       name: 'External Actor',
-      defaultTime: '10:24:18',
+      defaultTime: '10:24:18 UTC',
       icon: UserX,
       theme: 'theme-red',
       basis: 'observed',
@@ -39,7 +39,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '2. Web Server',
       ip: '10.0.0.5',
       name: 'Web Server',
-      defaultTime: '10:24:35',
+      defaultTime: '10:24:35 UTC',
       icon: Server,
       theme: 'theme-green',
       basis: 'observed', // Directly recorded telemetry (evt-002: authenticated web exploit)
@@ -49,7 +49,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '3. Decoy File Access',
       ip: '10.0.0.30',
       name: 'Payroll Records',
-      defaultTime: '10:25:02',
+      defaultTime: '10:25:02 UTC',
       icon: FileSpreadsheet,
       theme: 'theme-amber',
       basis: 'observed', // Directly recorded telemetry (evt-003: read payroll decoy file)
@@ -59,7 +59,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '4. Decoy Credentials',
       ip: '10.0.0.40',
       name: 'Admin Credentials',
-      defaultTime: '10:25:28',
+      defaultTime: '10:25:28 UTC',
       icon: Key,
       theme: 'theme-amber',
       basis: 'observed', // Directly recorded telemetry (evt-004: decoy admin credentials extracted)
@@ -69,7 +69,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '5. Decoy Server',
       ip: '10.0.0.50',
       name: 'Decoy Server',
-      defaultTime: '10:26:01',
+      defaultTime: '10:26:01 UTC',
       icon: Server,
       theme: 'theme-amber',
       basis: 'inferred', // Canary-token linkage: lateral pivot to decoy server using stolen canary credentials
@@ -79,7 +79,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       title: '6. Real Server Touched',
       ip: '10.0.0.10',
       name: 'Database Server',
-      defaultTime: '10:26:32',
+      defaultTime: '10:26:32 UTC',
       icon: Database,
       theme: 'theme-green',
       basis: 'observed', // Directly recorded telemetry (evt-006: probe on port 5432)
@@ -109,13 +109,13 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
       <div className="panel-header-row">
         <div className="panel-title-group">
           <GitCommit size={18} className="panel-title-icon" />
-          <h2 className="panel-title-text">Attack Path Analysis</h2>
+          <h2 className="panel-title-text">Attack Path Analysis (UTC)</h2>
         </div>
 
         <div className="path-legend-group">
           <span className="path-meta-tag">
             {currentStep > 0
-              ? `${visibleSteps.length} steps • ${alertsCount} alerts`
+              ? `${visibleSteps.length === 1 ? '1 step' : `${visibleSteps.length} steps`} • ${alertsCount === 1 ? '1 alert' : `${alertsCount} alerts`}`
               : '0 steps recorded'}
           </span>
           <div className="legend-entry">
@@ -159,7 +159,7 @@ export const AttackPathAnalysis: React.FC<AttackPathAnalysisProps> = ({
                     <div className="step-card-meta">
                       <span className="step-card-ip">{step.ip}</span>
                       <span className="step-card-name">{step.name}</span>
-                      <span className="step-card-time">{displayTime}</span>
+                      <span className="step-card-time">{displayTime.includes('UTC') ? displayTime : `${displayTime} UTC`}</span>
                     </div>
 
                     <div className={`step-card-badge ${step.isInferred ? 'badge-inferred' : 'badge-observed'}`}>

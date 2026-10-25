@@ -11,16 +11,28 @@ export function useSimulation() {
   const [error, setError] = useState<string | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
-  // Real-time dynamic timestamps generated from current live clock
+  const formatUtcTime = (timestamp: number | Date = Date.now()) => {
+    return (
+      new Date(timestamp).toLocaleTimeString('en-US', {
+        timeZone: 'UTC',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      }) + ' UTC'
+    )
+  }
+
+  // Real-time dynamic timestamps generated from current live clock in UTC
   const [stepTimestamps, setStepTimestamps] = useState<Record<number, string>>(() => {
     const now = Date.now()
     return {
-      1: new Date(now - 134000).toLocaleTimeString('en-US', { hour12: false }),
-      2: new Date(now - 117000).toLocaleTimeString('en-US', { hour12: false }),
-      3: new Date(now - 90000).toLocaleTimeString('en-US', { hour12: false }),
-      4: new Date(now - 64000).toLocaleTimeString('en-US', { hour12: false }),
-      5: new Date(now - 31000).toLocaleTimeString('en-US', { hour12: false }),
-      6: new Date(now).toLocaleTimeString('en-US', { hour12: false }),
+      1: formatUtcTime(now - 134000),
+      2: formatUtcTime(now - 117000),
+      3: formatUtcTime(now - 90000),
+      4: formatUtcTime(now - 64000),
+      5: formatUtcTime(now - 31000),
+      6: formatUtcTime(now),
     }
   })
 
@@ -74,7 +86,7 @@ export function useSimulation() {
     // Immediately start at Step 1 so items DO NOT disappear for 1 second!
     setCurrentStep(1)
     const initialTimestamps: Record<number, string> = {
-      1: new Date(startTime).toLocaleTimeString('en-US', { hour12: false }),
+      1: formatUtcTime(startTime),
     }
     setStepTimestamps(initialTimestamps)
     setToastMessage("Intruder recon detected from 203.0.113.44. Initiating telemetry trace...")
@@ -95,7 +107,7 @@ export function useSimulation() {
 
     schedule.forEach(({ step, delay, msg }) => {
       const timer = setTimeout(() => {
-        const currentClockTime = new Date().toLocaleTimeString('en-US', { hour12: false })
+        const currentClockTime = formatUtcTime()
         setCurrentStep(step)
         setStepTimestamps((prev) => ({
           ...prev,

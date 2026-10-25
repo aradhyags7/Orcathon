@@ -765,7 +765,8 @@ body {
   min-height: 0;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .attack-path-flow {
@@ -778,13 +779,13 @@ body {
 
 .path-step-card {
   flex: 1;
-  min-width: 0;
+  min-width: 82px;
   height: 100%;
   max-height: 135px;
   background-color: #FAF8F5;
   border: 1px solid var(--border-card);
   border-radius: 7px;
-  padding: 6px 4px;
+  padding: 5px 3px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -800,13 +801,16 @@ body {
 }
 
 .step-card-title {
-  font-size: 0.65rem;
+  font-size: 0.63rem;
   font-weight: 700;
   color: var(--text-title);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.15;
+  overflow: visible;
+  text-overflow: unset;
   max-width: 100%;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .step-card-icon-wrap {
@@ -850,13 +854,12 @@ body {
 }
 
 .step-card-name {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 600;
   color: var(--text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 95px;
+  white-space: normal;
+  line-height: 1.15;
+  max-width: 100%;
 }
 
 .step-card-time {

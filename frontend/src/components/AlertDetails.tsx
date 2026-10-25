@@ -9,16 +9,37 @@ interface AlertDetailsProps {
   isCompleted?: boolean
 }
 
+const SEVERITY_WEIGHT: Record<string, number> = {
+  critical: 4,
+  high: 3,
+  medium: 2,
+  low: 1,
+}
+
+const getHighestSeverityIndex = (alertList: Alert[]): number => {
+  if (!alertList || alertList.length === 0) return 0
+  let highestIdx = 0
+  let maxWeight = -1
+  alertList.forEach((alert, idx) => {
+    const weight = SEVERITY_WEIGHT[alert.severity?.toLowerCase()] || 0
+    if (weight > maxWeight) {
+      maxWeight = weight
+      highestIdx = idx
+    }
+  })
+  return highestIdx
+}
+
 export const AlertDetails: React.FC<AlertDetailsProps> = ({
   alerts = [],
   currentStep = 6,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0)
+  const [currentIndex, setCurrentIndex] = useState<number>(() => getHighestSeverityIndex(alerts))
 
-  // Automatically focus on the latest alert as it triggers
+  // Default Alert Details to the highest-severity alert whenever alerts change
   useEffect(() => {
     if (alerts.length > 0) {
-      setCurrentIndex(alerts.length - 1)
+      setCurrentIndex(getHighestSeverityIndex(alerts))
     } else {
       setCurrentIndex(0)
     }
@@ -112,7 +133,7 @@ export const AlertDetails: React.FC<AlertDetailsProps> = ({
           <h3 className="alert-main-title">{currentAlert.title}</h3>
         </div>
         <span className="alert-meta-time">
-          {currentAlert.created_at}
+          {currentAlert.created_at.includes('UTC') ? currentAlert.created_at : `${currentAlert.created_at} UTC`}
         </span>
       </div>
 

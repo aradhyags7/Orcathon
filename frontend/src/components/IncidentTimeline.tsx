@@ -25,7 +25,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-001',
     step: 1,
-    defaultTime: '10:24:18',
+    defaultTime: '10:24:18 UTC',
     title: 'External connection detected',
     desc: '203.0.113.44 → 10.0.0.5 (Web Server)',
     dotColor: 'dot-red',
@@ -33,7 +33,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-002',
     step: 2,
-    defaultTime: '10:24:35',
+    defaultTime: '10:24:35 UTC',
     title: 'Web server accessed',
     desc: 'Authenticated using web exploit',
     dotColor: 'dot-red',
@@ -41,7 +41,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-003',
     step: 3,
-    defaultTime: '10:25:02',
+    defaultTime: '10:25:02 UTC',
     title: 'Decoy file accessed',
     desc: 'Read payroll_records_fake.xlsx',
     dotColor: 'dot-red',
@@ -50,7 +50,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-004',
     step: 4,
-    defaultTime: '10:25:28',
+    defaultTime: '10:25:28 UTC',
     title: 'Fake credentials used',
     desc: 'Attempted login with decoy admin account',
     dotColor: 'dot-red',
@@ -59,7 +59,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-005',
     step: 5,
-    defaultTime: '10:26:01',
+    defaultTime: '10:26:01 UTC',
     title: 'Lateral movement to decoy server',
     desc: 'Accessed decoy server 10.0.0.50',
     dotColor: 'dot-amber',
@@ -68,7 +68,7 @@ const allTimelineItems: TimelineItem[] = [
   {
     id: 'evt-006',
     step: 6,
-    defaultTime: '10:26:32',
+    defaultTime: '10:26:32 UTC',
     title: 'Real server touched',
     desc: 'Scanned database server 10.0.0.10',
     dotColor: 'dot-green',
@@ -91,11 +91,11 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
       <div className="panel-header-row">
         <div className="panel-title-group">
           <Clock size={16} className="panel-title-icon" />
-          <h2 className="panel-title-text">Incident Timeline</h2>
+          <h2 className="panel-title-text">Incident Timeline (UTC)</h2>
         </div>
         <span className="panel-meta-tag">
           {currentStep > 0
-            ? `${visibleItems.length} events • ${activeAlertCount} alerts`
+            ? `${visibleItems.length === 1 ? '1 event' : `${visibleItems.length} events`} • ${activeAlertCount === 1 ? '1 alert' : `${activeAlertCount} alerts`}`
             : '0 events recorded'}
         </span>
       </div>
@@ -138,7 +138,7 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
 
                   {/* Real-time Time Stamp */}
                   <div className="time-col">
-                    <span className="time-label">{displayTime}</span>
+                    <span className="time-label">{displayTime.includes('UTC') ? displayTime : `${displayTime} UTC`}</span>
                   </div>
 
                   {/* Text Details */}
