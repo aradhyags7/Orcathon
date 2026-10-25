@@ -1,80 +1,147 @@
 import React from 'react'
-import type { AttackPathStep, SecurityEvent } from '../types/api'
-import { Clock, ShieldAlert, Terminal, FileCode, CheckCircle } from 'lucide-react'
+import type { SecurityEvent } from '../types/api'
+import { Clock, ShieldAlert } from 'lucide-react'
 
 interface IncidentTimelineProps {
-  steps: AttackPathStep[]
-  events: SecurityEvent[]
+  events?: SecurityEvent[]
+  currentStep?: number
+  isCompleted?: boolean
+  selectedEventId?: string
+  onSelectEvent?: (eventId: string) => void
 }
 
-export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({ steps, events }) => {
-  const eventMap = new Map<string, SecurityEvent>()
-  events.forEach((e) => eventMap.set(e.id, e))
+interface TimelineItem {
+  id: string
+  time: string
+  title: string
+  desc: string
+  dotColor: string
+  severityLabel?: 'High' | 'Medium' | 'Low'
+  step: number
+}
+
+const allTimelineItems: TimelineItem[] = [
+  {
+    id: 'evt-001',
+    step: 1,
+    time: '10:24:18',
+    title: 'External connection detected',
+    desc: '203.0.113.44 → 10.0.0.5 (Web Server)',
+    dotColor: 'dot-red',
+  },
+  {
+    id: 'evt-002',
+    step: 2,
+    time: '10:24:35',
+    title: 'Web server accessed',
+    desc: 'Authenticated using web exploit',
+    dotColor: 'dot-red',
+  },
+  {
+    id: 'evt-003',
+    step: 3,
+    time: '10:25:02',
+    title: 'Decoy file accessed',
+    desc: 'Read payroll_records_fake.xlsx',
+    dotColor: 'dot-red',
+    severityLabel: 'High',
+  },
+  {
+    id: 'evt-004',
+    step: 4,
+    time: '10:25:28',
+    title: 'Fake credentials used',
+    desc: 'Attempted login with decoy admin account',
+    dotColor: 'dot-red',
+    severityLabel: 'High',
+  },
+  {
+    id: 'evt-005',
+    step: 5,
+    time: '10:26:01',
+    title: 'Lateral movement to decoy server',
+    desc: 'Accessed decoy server 10.0.0.50',
+    dotColor: 'dot-amber',
+    severityLabel: 'Medium',
+  },
+  {
+    id: 'evt-006',
+    step: 6,
+    time: '10:26:32',
+    title: 'Real server touched',
+    desc: 'Scanned database server 10.0.0.10',
+    dotColor: 'dot-green',
+    severityLabel: 'Low',
+  },
+]
+
+export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
+  currentStep = 0,
+  selectedEventId,
+  onSelectEvent,
+}) => {
+  // Only show events that have occurred up to currentStep!
+  const visibleItems = allTimelineItems.filter((item) => item.step <= currentStep)
+  const alertCount = visibleItems.filter((i) => i.severityLabel !== undefined).length
 
   return (
-    <div className="panel-card timeline-panel">
-      <div className="panel-header">
-        <div>
-          <h2 className="panel-title">Reconstructed Attack Path Timeline</h2>
-          <p className="panel-subtitle">Multi-hop chronological event sequence from initial access to decoy intercept</p>
+    <div className="panel-card incident-timeline-card">
+      <div className="panel-header-row">
+        <div className="panel-title-group">
+          <Clock size={16} className="panel-title-icon" />
+          <h2 className="panel-title-text">Incident Timeline</h2>
         </div>
-        <span className="count-tag">{steps.length} Milestones</span>
+        <span className="panel-meta-tag">
+          {currentStep > 0
+            ? `${visibleItems.length} events • ${alertCount} alerts`
+            : '0 events recorded'}
+        </span>
       </div>
 
-      <div className="timeline-scroll-area">
-        {steps.length === 0 ? (
-          <div className="empty-state">
-            <Clock size={36} className="empty-icon text-cyan" />
-            <p className="empty-title">Awaiting Intrusion Telemetry</p>
-            <p className="empty-sub">No lateral movement or attack milestones recorded yet. Run a simulation to reconstruct the timeline.</p>
+      <div className="timeline-body-scroll">
+        {visibleItems.length === 0 ? (
+          <div className="empty-state-box">
+            <ShieldAlert size={28} className="empty-state-icon" style={{ opacity: 0.4, margin: '0 auto 8px auto' }} />
+            <p>No active security telemetry.</p>
+            <span>Click "Run Attack Simulation" to observe real-time intrusion events.</span>
           </div>
         ) : (
-          <div className="timeline-tree">
-            {steps.map((step, idx) => {
-              const evt = eventMap.get(step.event_id)
-              const isDecoy = evt?.is_decoy_interaction
-              const isFirst = idx === 0
-              const isLast = idx === steps.length - 1
+          <div className="vertical-timeline-track">
+            {visibleItems.map((item, idx) => {
+              const isSelected = selectedEventId === item.id
+              const isLast = idx === visibleItems.length - 1
+              const isNewlyAdded = item.step === currentStep
 
               return (
-                <div key={step.step} className="timeline-item">
-                  <div className="timeline-track">
-                    <div className={`timeline-node ${isDecoy ? 'node-tripwire' : isFirst ? 'node-ingress' : 'node-pivot'}`}>
-                      {isDecoy ? <ShieldAlert size={14} /> : isFirst ? <Terminal size={14} /> : <FileCode size={14} />}
-                    </div>
-                    {!isLast && <div className="timeline-line"></div>}
+                <div
+                  key={item.id}
+                  className={`timeline-entry-row ${isSelected ? 'row-selected' : ''} ${isNewlyAdded ? 'entry-fade-in' : ''}`}
+                  onClick={() => onSelectEvent?.(item.id)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  {/* Timeline Node + Track Line */}
+                  <div className="track-col">
+                    <span className={`track-dot ${item.dotColor} ${isNewlyAdded ? 'track-dot-pulse' : ''}`}></span>
+                    {!isLast && <span className="track-vertical-line"></span>}
                   </div>
 
-                  <div className={`timeline-content-card ${isDecoy ? 'card-decoy-hit' : ''}`}>
-                    <div className="timeline-step-header">
-                      <div className="step-tag-row">
-                        <span className="step-number">STEP {step.step}</span>
-                        <span className="step-label">{step.label}</span>
-                      </div>
-                      <span className="step-time">
-                        {new Date(step.timestamp).toLocaleTimeString()}
-                      </span>
-                    </div>
+                  {/* Time Stamp */}
+                  <div className="time-col">
+                    <span className="time-label">{item.time}</span>
+                  </div>
 
-                    <div className="timeline-asset-focus">
-                      <span className="asset-tag">Asset: <code>{step.asset_id}</code></span>
-                      {evt && (
-                        <span className={`event-type-pill pill-${evt.severity}`}>
-                          {evt.event_type.replace('_', ' ')}
+                  {/* Text Details */}
+                  <div className="content-col">
+                    <div className="entry-title-row">
+                      <span className="entry-title">{item.title}</span>
+                      {item.severityLabel && (
+                        <span className={`timeline-severity-pill pill-${item.severityLabel.toLowerCase()} ${isNewlyAdded ? 'badge-pop' : ''}`}>
+                          {item.severityLabel}
                         </span>
                       )}
                     </div>
-
-                    {evt && (
-                      <p className="timeline-event-msg">{evt.message}</p>
-                    )}
-
-                    {isDecoy && (
-                      <div className="decoy-intercept-callout">
-                        <CheckCircle size={13} className="text-emerald" />
-                        <span>Canary trap triggered & alert emitted within 100ms</span>
-                      </div>
-                    )}
+                    <span className="entry-desc">{item.desc}</span>
                   </div>
                 </div>
               )
