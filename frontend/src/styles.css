@@ -957,7 +957,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 12px;
+  width: 14px;
   padding-top: 5px;
   position: relative;
 }
@@ -966,20 +966,49 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  z-index: 2;
+  z-index: 3;
+  flex-shrink: 0;
 }
 
 .track-dot.dot-red { background-color: #DC2626; }
 .track-dot.dot-amber { background-color: #D97706; }
 .track-dot.dot-green { background-color: #16A34A; }
 
-.track-vertical-line {
+.track-vertical-connector {
   position: absolute;
   top: 12px;
-  bottom: -12px;
-  width: 1px;
-  background-color: #E5E0D5;
+  bottom: -14px;
+  width: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
+}
+
+.track-vertical-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #E2DDD3;
+  z-index: 1;
+}
+
+.track-down-arrow {
+  position: relative;
+  z-index: 2;
+  color: #A39E93;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  padding: 0;
+  margin-top: 1px;
+  transition: color 0.15s ease;
+}
+
+.timeline-entry-row:hover .track-down-arrow {
+  color: #1B5E39;
+  background-color: #FAF8F5;
 }
 
 .time-col {

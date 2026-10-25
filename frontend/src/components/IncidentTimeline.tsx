@@ -1,6 +1,6 @@
 import React from 'react'
 import type { SecurityEvent } from '../types/api'
-import { Clock, ShieldAlert } from 'lucide-react'
+import { Clock, ShieldAlert, ChevronDown } from 'lucide-react'
 
 interface IncidentTimelineProps {
   events?: SecurityEvent[]
@@ -123,12 +123,17 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                   role="button"
                   tabIndex={0}
                 >
-                  {/* Timeline Node + Track Line */}
+                  {/* Timeline Node + Track Line with Down Arrow */}
                   <div className="track-col">
                     <span
                       className={`track-dot ${item.dotColor} ${isNewest ? 'track-dot-pulse' : ''}`}
                     ></span>
-                    {!isLast && <span className="track-vertical-line"></span>}
+                    {!isLast && (
+                      <div className="track-vertical-connector">
+                        <span className="track-vertical-line"></span>
+                        <ChevronDown size={10} className="track-down-arrow" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Real-time Time Stamp */}
