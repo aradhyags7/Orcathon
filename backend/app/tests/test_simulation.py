@@ -32,7 +32,17 @@ def test_run_simulation_and_reset():
     assert get_sim.status_code == 200
     assert get_sim.json()["simulation_id"] == sim_id
 
-    # 5. Check events & alerts filter
+    # 5. Check incident alias
+    inc_res = client.get(f"/api/incidents/{sim_id}")
+    assert inc_res.status_code == 200
+    assert inc_res.json()["simulation_id"] == sim_id
+
+    # 6. Check Adaption analysis endpoint
+    adapt_res = client.post(f"/api/simulations/{sim_id}/adaption-analysis")
+    assert adapt_res.status_code == 200
+    assert "adaption_integration" in adapt_res.json()
+
+    # 7. Check events & alerts filter
     events_res = client.get(f"/api/events?simulation_id={sim_id}")
     assert events_res.status_code == 200
     assert len(events_res.json()["events"]) == 4
