@@ -7,15 +7,18 @@ interface StatCardsProps {
   isCompleted?: boolean
 }
 
-export const StatCards: React.FC<StatCardsProps> = ({ summary, isCompleted = true }) => {
+export const StatCards: React.FC<StatCardsProps> = ({ summary }) => {
+  const alertsCount = summary?.alerts_count ?? 0
+  const intrudersCount = summary?.intruders_count ?? 0
+  const decoyCount = summary?.decoy_interactions_count ?? 0
+  const affectedCount = summary?.assets_affected ?? 0
+
   const cards = [
     {
       id: 'network-assets',
       title: 'Network Assets',
       value: summary?.total_assets ?? 8,
-      subtext: isCompleted
-        ? `${summary?.real_assets_count ?? 5} real · ${summary?.decoy_assets_count ?? 3} decoy`
-        : '5 real · 3 decoy',
+      subtext: `${summary?.real_assets_count ?? 5} real · ${summary?.decoy_assets_count ?? 3} decoy`,
       icon: Server,
       theme: 'theme-green',
       bars: [4, 7, 10],
@@ -23,38 +26,42 @@ export const StatCards: React.FC<StatCardsProps> = ({ summary, isCompleted = tru
     {
       id: 'security-alerts',
       title: 'Security Alerts',
-      value: isCompleted ? summary?.alerts_count ?? 4 : 4,
-      subtext: '2 high · 1 medium · 1 low',
+      value: alertsCount,
+      subtext: alertsCount >= 4
+        ? '2 high · 1 medium · 1 low'
+        : alertsCount > 0
+        ? `${alertsCount} active alert${alertsCount > 1 ? 's' : ''}`
+        : '0 detected',
       icon: AlertTriangle,
-      theme: 'theme-red',
-      bars: [3, 6, 9],
+      theme: alertsCount > 0 ? 'theme-red' : 'theme-teal',
+      bars: alertsCount > 0 ? [3, 6, 9] : [2, 2, 2],
     },
     {
       id: 'intruders-detected',
       title: 'Intruders Detected',
-      value: isCompleted ? summary?.intruders_count ?? 1 : 1,
-      subtext: 'External actor',
+      value: intrudersCount,
+      subtext: intrudersCount > 0 ? 'External actor' : 'Perimeter secure',
       icon: Users,
-      theme: 'theme-teal',
-      bars: [2, 5, 8],
+      theme: intrudersCount > 0 ? 'theme-red' : 'theme-teal',
+      bars: intrudersCount > 0 ? [2, 5, 8] : [2, 2, 2],
     },
     {
       id: 'decoy-interactions',
       title: 'Decoy Interactions',
-      value: isCompleted ? summary?.decoy_interactions_count ?? 3 : 3,
-      subtext: 'Decoy assets accessed',
+      value: decoyCount,
+      subtext: decoyCount > 0 ? 'Decoy assets accessed' : 'Canary tripwires armed',
       icon: Crosshair,
-      theme: 'theme-amber',
-      bars: [4, 7, 10],
+      theme: decoyCount > 0 ? 'theme-amber' : 'theme-teal',
+      bars: decoyCount > 0 ? [4, 7, 10] : [2, 2, 2],
     },
     {
       id: 'assets-affected',
       title: 'Assets Affected',
-      value: isCompleted ? summary?.assets_affected ?? 4 : 4,
-      subtext: 'Real and decoy assets',
+      value: affectedCount,
+      subtext: affectedCount > 0 ? 'Real and decoy assets' : 'All systems nominal',
       icon: Layers,
-      theme: 'theme-green',
-      bars: [3, 6, 8],
+      theme: affectedCount > 0 ? 'theme-green' : 'theme-teal',
+      bars: affectedCount > 0 ? [3, 6, 8] : [2, 2, 2],
     },
   ]
 

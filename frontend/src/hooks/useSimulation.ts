@@ -4,8 +4,8 @@ import { api } from '../lib/api'
 import { mockSimulationResult, mockInitialGraph } from '../data/mockData'
 
 export function useSimulation() {
-  // Start at step 6 by default to display the complete pristine dashboard on initial load
-  const [currentStep, setCurrentStep] = useState<number>(6)
+  // Start at step 0 so the dashboard begins at clean baseline, ready to run live simulation
+  const [currentStep, setCurrentStep] = useState<number>(0)
   const [isSimulating, setIsSimulating] = useState<boolean>(false)
   const [backendAvailable, setBackendAvailable] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
