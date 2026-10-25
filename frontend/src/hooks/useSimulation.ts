@@ -90,7 +90,7 @@ export function useSimulation() {
       { step: 3, delay: 2400, msg: "🚨 TRIPWIRE SPRUNG! Decoy file payroll_records_fake.xlsx accessed!" },
       { step: 4, delay: 3600, msg: "🚨 CANARY TRIGGERED! Planted admin_decoy credentials used!" },
       { step: 5, delay: 4800, msg: "🚨 HONEYPOT REACHED! Attacker routed to isolated Decoy Server 10.0.0.50!" },
-      { step: 6, delay: 6000, msg: "🛡️ INCIDENT CONTAINED: Database scan intercepted. 0 production data leaked." },
+      { step: 6, delay: 6000, msg: "🛡️ [Simulated] Scenario Complete: Database probe detected & blocked. Simulated containment applied." },
     ]
 
     schedule.forEach(({ step, delay, msg }) => {
@@ -211,7 +211,7 @@ export function useSimulation() {
         return { ...n, status: currentStep >= 5 ? 'alert' : 'healthy' }
       }
       if (n.id === 'database-server-01') {
-        return { ...n, status: currentStep >= 6 ? 'compromised' : 'healthy' }
+        return { ...n, status: currentStep >= 6 ? 'alert' : 'healthy' }
       }
       return n
     }),

@@ -312,8 +312,8 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ currentStep = 6 }) =
               isAlerted = isDecoyServerAlerted
               statusLabel = 'Decoy'
             } else if (id === 'database-server-01') {
-              isCompromised = isDatabaseCompromised
-              statusLabel = isDatabaseCompromised ? 'Compromised' : 'Healthy'
+              isAlerted = isDatabaseCompromised
+              statusLabel = isDatabaseCompromised ? 'Probed' : 'Healthy'
             } else {
               statusLabel = 'Healthy'
             }
